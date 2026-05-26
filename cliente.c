@@ -173,6 +173,10 @@ void editarContrasena(Cliente *c) {
 }
 
 void mostrarCliente(Cliente *c) {
+    if (c == NULL) {
+        printf("El cliente no existe.\n");
+        return;
+    }
     printf("Nombre: %s\n", c->nombre);
     printf("Apellido: %s\n", c->apellido);
     printf("Edad: %d\n", c->edad);
