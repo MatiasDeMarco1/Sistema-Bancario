@@ -55,9 +55,7 @@ Cliente* crearCliente() {
     c->pais = malloc(strlen(buffer) + 1);
     strcpy(c->pais, buffer);
 
-    printf("Ingrese la contrasena del cliente: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    buffer[strcspn(buffer, "\n")] = '\0';
+    validoContrasena(buffer, sizeof(buffer));
     c->contrasena = malloc(strlen(buffer) + 1);
     strcpy(c->contrasena, buffer);
 
@@ -170,6 +168,22 @@ void editarContrasena(Cliente *c) {
     printf("Ingrese la nueva contrasena del cliente: ");
     fgets(c->contrasena, sizeof(c->contrasena), stdin);
     c->contrasena[strcspn(c->contrasena, "\n")] = '\0'; // Remove newline character
+}
+
+void validoContrasena(char *buffer, int tamBuffer ){
+    do
+    {
+        printf("Ingrese la contrasena del cliente: ");
+        fgets(buffer, sizeof(buffer), stdin);
+        buffer[strcspn(buffer, "\n")] = '\0'; 
+        if (strlen(buffer) < 8)
+        {
+            printf("Error, la contraseña debe tener al menos 8 caracteres");
+        }
+        
+    } while (strlen(buffer) >= 8);
+    
+    // Valido tamaño de contraseña.
 }
 
 void mostrarCliente(Cliente *c) {

@@ -29,4 +29,6 @@ void editarLocalidad(Cliente *c);
 void editarPais(Cliente *c);
 void editarContrasena(Cliente *c);
 
+void validoContrasena(char *buffer, int tamBuffer );
+
 void mostrarCliente(Cliente *c);
