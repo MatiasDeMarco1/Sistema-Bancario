@@ -35,7 +35,6 @@ void guardarCambios(Cliente *c) {
 // ---- ABM ----
 
 void crearCliente(Cliente *c) {
-    // Generar id automatico
     FILE *f = fopen(ARCHIVO, "rb");
     if (f == NULL) {
         c->id = 1;
@@ -54,17 +53,32 @@ void crearCliente(Cliente *c) {
     fgets(c->apellido, sizeof(c->apellido), stdin);
     c->apellido[strcspn(c->apellido, "\n")] = '\0';
 
-    printf("Ingrese el CUIT del cliente (XX-XXXXXXXX-X): ");
-    fgets(c->cuit, sizeof(c->cuit), stdin);
-    c->cuit[strcspn(c->cuit, "\n")] = '\0';
+    // CUIT con validacion
+    do {
+        printf("Ingrese el CUIT del cliente (XX-XXXXXXXX-X): ");
+        fgets(c->cuit, sizeof(c->cuit), stdin);
+        c->cuit[strcspn(c->cuit, "\n")] = '\0';
+        if (!validar_Cuil(c->cuit))
+            printf("Error: CUIT invalido.\n");
+    } while (!validar_Cuil(c->cuit));
 
-    printf("Ingrese el mail del cliente: ");
-    fgets(c->mail, sizeof(c->mail), stdin);
-    c->mail[strcspn(c->mail, "\n")] = '\0';
+    // Mail con validacion
+    do {
+        printf("Ingrese el mail del cliente: ");
+        fgets(c->mail, sizeof(c->mail), stdin);
+        c->mail[strcspn(c->mail, "\n")] = '\0';
+        if (!validar_Mail(c->mail))
+            printf("Error: mail invalido.\n");
+    } while (!validar_Mail(c->mail));
 
-    printf("Ingrese el telefono del cliente: ");
-    fgets(c->telefono, sizeof(c->telefono), stdin);
-    c->telefono[strcspn(c->telefono, "\n")] = '\0';
+    // Telefono con validacion
+    do {
+        printf("Ingrese el telefono del cliente: ");
+        fgets(c->telefono, sizeof(c->telefono), stdin);
+        c->telefono[strcspn(c->telefono, "\n")] = '\0';
+        if (!validar_Telefono(c->telefono))
+            printf("Error: telefono invalido.\n");
+    } while (!validar_Telefono(c->telefono));
 
     printf("Ingrese la localidad del cliente: ");
     fgets(c->localidad, sizeof(c->localidad), stdin);
@@ -134,21 +148,33 @@ void editarApellido(Cliente *c) {
 }
 
 void editarCUIT(Cliente *c) {
-    printf("Ingrese el nuevo CUIT (XX-XXXXXXXX-X): ");
-    fgets(c->cuit, sizeof(c->cuit), stdin);
-    c->cuit[strcspn(c->cuit, "\n")] = '\0';
+    do {
+        printf("Ingrese el nuevo CUIT (XX-XXXXXXXX-X): ");
+        fgets(c->cuit, sizeof(c->cuit), stdin);
+        c->cuit[strcspn(c->cuit, "\n")] = '\0';
+        if (!validar_Cuil(c->cuit))
+            printf("Error: CUIT invalido.\n");
+    } while (!validar_Cuil(c->cuit));
 }
 
 void editarMail(Cliente *c) {
-    printf("Ingrese el nuevo mail: ");
-    fgets(c->mail, sizeof(c->mail), stdin);
-    c->mail[strcspn(c->mail, "\n")] = '\0';
+    do {
+        printf("Ingrese el nuevo mail: ");
+        fgets(c->mail, sizeof(c->mail), stdin);
+        c->mail[strcspn(c->mail, "\n")] = '\0';
+        if (!validar_Mail(c->mail))
+            printf("Error: mail invalido.\n");
+    } while (!validar_Mail(c->mail));
 }
 
 void editarTelefono(Cliente *c) {
-    printf("Ingrese el nuevo telefono: ");
-    fgets(c->telefono, sizeof(c->telefono), stdin);
-    c->telefono[strcspn(c->telefono, "\n")] = '\0';
+    do {
+        printf("Ingrese el nuevo telefono: ");
+        fgets(c->telefono, sizeof(c->telefono), stdin);
+        c->telefono[strcspn(c->telefono, "\n")] = '\0';
+        if (!validar_Telefono(c->telefono))
+            printf("Error: telefono invalido.\n");
+    } while (!validar_Telefono(c->telefono));
 }
 
 void editarLocalidad(Cliente *c) {
