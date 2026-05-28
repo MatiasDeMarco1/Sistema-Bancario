@@ -1,9 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "menu.h"
-#include "cliente.h"
 
 int main() {
     system("mkdir -p datos");
-    menuPrincipal();
+    menuInicial();
     return 0;
 }

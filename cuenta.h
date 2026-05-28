@@ -1,27 +1,34 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#ifndef CUENTA_H
+#define CUENTA_H
+
+typedef enum { PESOS, DOLARES } Moneda;
 
 typedef struct {
-    int cbu;
-    char *alias;
-    char *nombre;
-    char *apellido;
-    long telefono;
-    char *mail;
-    long cuit;
+    int    id;
+    char   cliente_cuit[14];
+    char   cbu[23];
+    char   alias[50];
+    Moneda moneda;
+    double saldo;
+    int    activa;
 } Cuenta;
 
-Cuenta* crearCuenta();
+// Archivo
+void guardarCuenta(Cuenta *c);
+int  buscarCuenta(int id, Cuenta *c);
+void guardarCambiosCuenta(Cuenta *c);
 
-void eliminarCuenta(Cuenta **cuenta);
+// ABM
+void crearCuenta(Cuenta *c, char *cuit, Moneda moneda);
+int  clienteTieneCuenta(char *cuit, Moneda moneda);
+void mostrarCuenta(Cuenta *c);
+void mostrarCuentasCliente(char *cuit);
 
-void mostrarCuenta(Cuenta *cuenta);
+// Editar
+void editarAlias(Cuenta *c);
 
-void editarCuenta(Cuenta *cuenta);
+// CBU y alias
+void generarCBU(char *cbu);
+void pedirAlias(char *alias, Moneda moneda);
 
-void editarAlias(Cuenta *cuenta); 
-void editarNombre(Cuenta *cuenta);
-void editarApellido(Cuenta *cuenta);
-void editarTelefono(Cuenta *cuenta);
-void editarMail(Cuenta *cuenta);
+#endif

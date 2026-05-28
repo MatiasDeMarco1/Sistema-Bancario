@@ -111,11 +111,6 @@ int validar_Mail(const char *mail) {
 
     return 1;
 }
-
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-
 /*
  * Retorna 1 si el teléfono es válido, 0 si no.
  * Formatos aceptados (Argentina):
@@ -126,7 +121,7 @@ int validar_Mail(const char *mail) {
  *   - 1234-5678
  * Reglas:
  *   - Solo dígitos, espacios, guiones y '+' al inicio
- *   - Entre 8 y 15 dígitos en total (estándar E.164)
+ *   - Entre 8 y 15 dígitos en total 
  *   - No puede empezar con 0 y otro 0 seguido
  *   - No puede tener guiones o espacios consecutivos
  */
@@ -156,7 +151,7 @@ int validar_Telefono(const char *tel) {
         }
     }
 
-    /* Cantidad de dígitos según estándar E.164: mínimo 8, máximo 15 */
+    /* Cantidad de dígitos : mínimo 8, máximo 15 */
     if (digitos < 8 || digitos > 15) return 0;
 
     /* No puede haber dos ceros al inicio (después del '+' si lo hay) */

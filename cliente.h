@@ -17,9 +17,11 @@ typedef struct {
     int  activo;
 } Cliente;
 
+int login(Cliente *c);
+
 // ABM
 void crearCliente(Cliente *c);
-void eliminarCliente(int id);
+void eliminarCliente(char *c);
 void editarCliente(Cliente *c);
 void mostrarCliente(Cliente *c);
 void mostrarTodos();

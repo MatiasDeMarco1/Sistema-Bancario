@@ -1,161 +1,131 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 #include "cuenta.h"
+#include "validaciones.h"
 
-Cuenta* crearCuenta() {
-    Cuenta *cuenta = calloc(1, sizeof(Cuenta)); // aloja y pone todo en 0
-    if (cuenta == NULL) {
-        printf("Error: no se pudo alojar memoria.\n");
-        return NULL;
+#define ARCHIVO_CUENTAS "./datos/cuentas.dat"
+
+// ---- ARCHIVO ----
+
+void guardarCuenta(Cuenta *c) {
+    FILE *f = fopen(ARCHIVO_CUENTAS, "ab");
+    if (f == NULL) { printf("Error al abrir archivo.\n"); return; }
+    fwrite(c, sizeof(Cuenta), 1, f);
+    fclose(f);
+}
+
+int buscarCuenta(int id, Cuenta *c) {
+    FILE *f = fopen(ARCHIVO_CUENTAS, "rb");
+    if (f == NULL) { printf("Error al abrir archivo.\n"); return 0; }
+    fseek(f, (id - 1) * sizeof(Cuenta), SEEK_SET);
+    int leido = fread(c, sizeof(Cuenta), 1, f);
+    fclose(f);
+    return leido;
+}
+
+void guardarCambiosCuenta(Cuenta *c) {
+    FILE *f = fopen(ARCHIVO_CUENTAS, "r+b");
+    if (f == NULL) { printf("Error al abrir archivo.\n"); return; }
+    fseek(f, (c->id - 1) * sizeof(Cuenta), SEEK_SET);
+    fwrite(c, sizeof(Cuenta), 1, f);
+    fclose(f);
+}
+
+// ---- CBU Y ALIAS ----
+
+void generarCBU(char *cbu) {
+    srand(time(NULL));
+    for (int i = 0; i < 22; i++)
+        cbu[i] = '0' + rand() % 10;
+    cbu[22] = '\0';
+}
+
+void pedirAlias(char *alias, Moneda moneda) {
+    char base[40];
+    const char *sufijo = (moneda == PESOS) ? ".ars" : ".usd";
+
+    do {
+        printf("Ingrese un alias (se agrega %s automaticamente): ", sufijo);
+        fgets(base, sizeof(base), stdin);
+        base[strcspn(base, "\n")] = '\0';
+        if (strlen(base) == 0)
+            printf("Error: el alias no puede estar vacio.\n");
+    } while (strlen(base) == 0);
+
+    snprintf(alias, 50, "%s%s", base, sufijo);
+}
+
+// ---- ABM ----
+
+int clienteTieneCuenta(char *cuit, Moneda moneda) {
+    FILE *f = fopen(ARCHIVO_CUENTAS, "rb");
+    if (f == NULL) return 0;
+    Cuenta c;
+    while (fread(&c, sizeof(Cuenta), 1, f)) {
+        if (strcmp(c.cliente_cuit, cuit) == 0 && c.moneda == moneda && c.activa) {
+            fclose(f);
+            return 1;
+        }
+    }
+    fclose(f);
+    return 0;
+}
+
+void crearCuenta(Cuenta *c, char *cuit, Moneda moneda) {
+    FILE *f = fopen(ARCHIVO_CUENTAS, "rb");
+    if (f == NULL) {
+        c->id = 1;
+    } else {
+        fseek(f, 0, SEEK_END);
+        c->id = ftell(f) / sizeof(Cuenta) + 1;
+        fclose(f);
     }
 
-    char buffer[100];
+    strcpy(c->cliente_cuit, cuit);
+    c->moneda = moneda;
+    c->saldo  = 0.0;
+    c->activa = 1;
 
-    printf("Ingrese el CBU de la cuenta: ");
-    scanf("%d", &cuenta->cbu);
-    getchar(); // Consume the newline character left by scanf
+    generarCBU(c->cbu);
+    pedirAlias(c->alias, moneda);
 
-    printf("Ingrese el alias de la cuenta: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    buffer[strcspn(buffer, "\n")] = '\0';
-    cuenta->alias = malloc(strlen(buffer) + 1); // +1 para el '\0'
-    strcpy(cuenta->alias, buffer);
+    guardarCuenta(c);
 
-    printf("Ingrese el nombre del titular de la cuenta: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    buffer[strcspn(buffer, "\n")] = '\0';
-    cuenta->nombre = malloc(strlen(buffer) + 1);
-    strcpy(cuenta->nombre, buffer);
-
-    printf("Ingrese el apellido del titular de la cuenta: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    buffer[strcspn(buffer, "\n")] = '\0';
-    cuenta->apellido = malloc(strlen(buffer) + 1);
-    strcpy(cuenta->apellido, buffer);
-
-    printf("Ingrese el telefono del titular de la cuenta: ");
-    scanf("%ld", &cuenta->telefono);
-    getchar(); // Consume the newline character left by scanf
-
-    printf("Ingrese el mail del titular de la cuenta: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    buffer[strcspn(buffer, "\n")] = '\0';
-    cuenta->mail = malloc(strlen(buffer) + 1);
-    strcpy(cuenta->mail, buffer);
-
-    printf("Ingrese el CUIT del titular de la cuenta: ");
-    scanf("%ld", &cuenta->cuit);
-    getchar(); // Consume the newline character left by scanf
-
-    return cuenta;
+    printf("\nCuenta creada exitosamente.\n");
+    printf("CBU:   %s\n", c->cbu);
+    printf("Alias: %s\n", c->alias);
 }
 
-void eliminarCuenta(Cuenta **cuenta) {
-    if (cuenta == NULL || *cuenta == NULL) {
-        return;
+void mostrarCuenta(Cuenta *c) {
+    printf("ID:     %d\n",   c->id);
+    printf("CBU:    %s\n",   c->cbu);
+    printf("Alias:  %s\n",   c->alias);
+    printf("Moneda: %s\n",   c->moneda == PESOS ? "Pesos" : "Dolares");
+    printf("Saldo:  %.2f\n", c->saldo);
+}
+
+void mostrarCuentasCliente(char *cuit) {
+    FILE *f = fopen(ARCHIVO_CUENTAS, "rb");
+    if (f == NULL) { printf("No hay cuentas registradas.\n"); return; }
+    Cuenta c;
+    int encontrado = 0;
+    while (fread(&c, sizeof(Cuenta), 1, f)) {
+        if (strcmp(c.cliente_cuit, cuit) == 0 && c.activa) {
+            mostrarCuenta(&c);
+            printf("-------------------\n");
+            encontrado = 1;
+        }
     }
-    free((*cuenta)->alias);
-    free((*cuenta)->nombre);
-    free((*cuenta)->apellido);
-    free((*cuenta)->mail);
-    free(*cuenta);
-    *cuenta = NULL;
+    if (!encontrado) printf("No tiene cuentas activas.\n");
+    fclose(f);
 }
 
-void mostrarCuenta(Cuenta *cuenta) {
-    if (cuenta == NULL) {
-        printf("La cuenta no existe.\n");
-        return;
-    }
-    printf("CBU: %d\n", cuenta->cbu);
-    printf("Alias: %s\n", cuenta->alias);
-    printf("Nombre: %s\n", cuenta->nombre);
-    printf("Apellido: %s\n", cuenta->apellido);
-    printf("Telefono: %ld\n", cuenta->telefono);
-    printf("Mail: %s\n", cuenta->mail);
-    printf("CUIT: %ld\n", cuenta->cuit);
-}
+// ---- EDITAR ----
 
-void editarCuenta(Cuenta *cuenta) {
-    if (cuenta == NULL) {
-        printf("La cuenta no existe.\n");
-        return;
-    }
-    int opcion;
-    printf("Seleccione el campo a editar:\n");
-    printf("1. Alias\n");
-    printf("2. Nombre\n");
-    printf("3. Apellido\n");
-    printf("4. Telefono\n");
-    printf("5. Mail\n");
-    printf("Opcion: ");
-    scanf("%d", &opcion);
-    getchar(); // Consume the newline character left by scanf
-
-    switch (opcion) {
-        case 1:
-            editarAlias(cuenta);
-            break;
-        case 2:
-            editarNombre(cuenta);
-            break;
-        case 3:
-            editarApellido(cuenta);
-            break;
-        case 4:
-            editarTelefono(cuenta);
-            break;
-        case 5:
-            editarMail(cuenta);
-            break;
-        default:
-            printf("Opcion invalida.\n");
-    }
-}
-
-void editarAlias(Cuenta *cuenta) {
-    char buffer[100];
-    printf("Ingrese el nuevo alias de la cuenta: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    buffer[strcspn(buffer, "\n")] = '\0';
-    free(cuenta->alias); // Liberar el alias anterior
-    cuenta->alias = malloc(strlen(buffer) + 1);
-    strcpy(cuenta->alias, buffer);
-}
-
-void editarNombre(Cuenta *cuenta) {
-    char buffer[100];
-    printf("Ingrese el nuevo nombre del titular de la cuenta: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    buffer[strcspn(buffer, "\n")] = '\0';
-    free(cuenta->nombre); // Liberar el nombre anterior
-    cuenta->nombre = malloc(strlen(buffer) + 1);
-    strcpy(cuenta->nombre, buffer);
-}
-
-void editarApellido(Cuenta *cuenta) {
-    char buffer[100];
-    printf("Ingrese el nuevo apellido del titular de la cuenta: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    buffer[strcspn(buffer, "\n")] = '\0';
-    free(cuenta->apellido); // Liberar el apellido anterior
-    cuenta->apellido = malloc(strlen(buffer) + 1);
-    strcpy(cuenta->apellido, buffer);
-}
-
-void editarTelefono(Cuenta *cuenta) {
-    printf("Ingrese el nuevo telefono del titular de la cuenta: ");
-    scanf("%ld", &cuenta->telefono);
-    getchar(); // Consume the newline character left by scanf
-}
-
-void editarMail(Cuenta *cuenta) {
-    char buffer[100];
-    printf("Ingrese el nuevo mail del titular de la cuenta: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    buffer[strcspn(buffer, "\n")] = '\0';
-    free(cuenta->mail); // Liberar el mail anterior
-    cuenta->mail = malloc(strlen(buffer) + 1);
-    strcpy(cuenta->mail, buffer);
+void editarAlias(Cuenta *c) {
+    pedirAlias(c->alias, c->moneda); // reutiliza pedirAlias que ya agrega el sufijo
+    guardarCambiosCuenta(c);
+    printf("Alias actualizado: %s\n", c->alias);
 }

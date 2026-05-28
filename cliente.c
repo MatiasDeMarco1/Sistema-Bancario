@@ -7,6 +7,33 @@
 #define ARCHIVO "./datos/clientes.dat"
 
 // ---- ARCHIVO ----
+int login(Cliente *c) {
+    char identificador[80];
+    char contrasena[64];
+
+    printf("Ingrese CUIT, mail o telefono: ");
+    fgets(identificador, sizeof(identificador), stdin);
+    identificador[strcspn(identificador, "\n")] = '\0';
+
+    printf("Ingrese contrasena: ");
+    fgets(contrasena, sizeof(contrasena), stdin);
+    contrasena[strcspn(contrasena, "\n")] = '\0';
+
+    FILE *f = fopen(ARCHIVO, "rb");
+    if (f == NULL) { printf("Error al abrir archivo.\n"); return 0; }
+
+    while (fread(c, sizeof(Cliente), 1, f)) {
+        if ((strcmp(c->cuit,     identificador) == 0 ||
+             strcmp(c->mail,     identificador) == 0 ||
+             strcmp(c->telefono, identificador) == 0) &&
+             strcmp(c->contrasena, contrasena)  == 0) {
+            fclose(f);
+            return 1;
+        }
+    }
+    fclose(f);
+    return 0;
+}
 
 void guardarCliente(Cliente *c) {
     FILE *f = fopen(ARCHIVO, "ab");
@@ -95,12 +122,20 @@ void crearCliente(Cliente *c) {
     guardarCliente(c);
 }
 
-void eliminarCliente(int id) {
+void eliminarCliente(char *cuit) {
+    FILE *f = fopen(ARCHIVO, "rb");
+    if (f == NULL) { printf("Error al abrir archivo.\n"); return; }
     Cliente c;
-    if (!buscarCliente(id, &c)) { printf("Cliente no encontrado.\n"); return; }
-    c.activo = 0;
-    guardarCambios(&c);
-    printf("Cliente eliminado.\n");
+    while (fread(&c, sizeof(Cliente), 1, f)) {
+        if (strcmp(c.cuit, cuit) == 0) {
+            fclose(f);
+            c.activo = 0;
+            guardarCambios(&c);
+            return;
+        }
+    }
+    fclose(f);
+    printf("Cliente no encontrado.\n");
 }
 
 void editarCliente(Cliente *c) {
