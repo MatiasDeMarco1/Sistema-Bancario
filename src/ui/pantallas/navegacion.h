@@ -6,6 +6,7 @@
 typedef enum {
     NAV_SALIR,            // cerrar la aplicacion
     NAV_LOGIN,            // pantalla de inicio de sesion
+    NAV_REGISTRO,         // pantalla de registro de cliente
     NAV_MENU,             // menu post-login (mis cuentas)
     NAV_SELECCION_CUENTA, // elegir entre cuenta pesos / dolares
     NAV_CUENTA,           // operar sobre una cuenta seleccionada

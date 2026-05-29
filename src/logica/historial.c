@@ -68,3 +68,20 @@ void mostrarHistorialCliente(char *cuit) {
     if (!encontrado) printf("No hay movimientos para este cliente.\n");
     fclose(f);
 }
+
+int obtenerHistorialCliente(char *cuit, Movimiento movs[], int max) {
+    FILE *f = fopen(ARCHIVO_MOV, "rb");
+    if (f == NULL) return 0;
+
+    Movimiento m;
+    int n = 0;
+    while (n < max && fread(&m, sizeof(Movimiento), 1, f)) {
+        if (strcmp(m.cuit_origen, cuit) == 0 ||
+            strcmp(m.cuit_destino, cuit) == 0) {
+            movs[n] = m;
+            n++;
+        }
+    }
+    fclose(f);
+    return n;
+}

@@ -6,17 +6,19 @@
 #include <string.h>
 #include <stdlib.h>
 
-// De cuenta.c: para modificar alias necesitariamos separar pedirAlias.
-// Por ahora el boton de alias queda como TODO (pide por consola).
+// De cuenta.c
+void armarAlias(char *alias, const char *base, Moneda moneda);
+void guardarCambiosCuenta(Cuenta *c);
+int  aliasUnico(const char *alias);
 
-// Sub-modos internos de la pantalla
+// Sub-modos internos
 typedef enum {
-    MODO_VER,        // solo botones
-    MODO_INGRESAR,   // formulario de ingreso
-    MODO_RETIRAR     // formulario de retiro
+    MODO_VER,
+    MODO_INGRESAR,
+    MODO_RETIRAR,
+    MODO_ALIAS
 } ModoCuenta;
 
-// Traduce un ResultadoOp a un mensaje para mostrar
 static const char *mensaje_resultado(ResultadoOp r) {
     switch (r) {
         case OP_OK:                   return "Operacion exitosa";
@@ -31,7 +33,6 @@ static const char *mensaje_resultado(ResultadoOp r) {
 }
 
 Navegacion pantalla_cuenta(Ventana *v, Cuenta *cuenta) {
-    // --- Layout ---
     int panel_w = 520;
     int panel_h = 460;
     int panel_x = (VENTANA_ANCHO - panel_w) / 2;
@@ -46,7 +47,6 @@ Navegacion pantalla_cuenta(Ventana *v, Cuenta *cuenta) {
     int fila1 = panel_y + 200;
     int fila2 = fila1 + btn_h + gap;
 
-    // Botones de operacion
     Boton btn_ingresar = boton_crear(col1, fila1, btn_w, btn_h,
         "Ingresar dinero", COLOR_EXITO, COLOR_EXITO);
     Boton btn_retirar = boton_crear(col2, fila1, btn_w, btn_h,
@@ -55,13 +55,12 @@ Navegacion pantalla_cuenta(Ventana *v, Cuenta *cuenta) {
         "Transferir", COLOR_PRIMARIO, COLOR_PRIMARIO_HOVER);
     Boton btn_alias = boton_crear(col2, fila2, btn_w, btn_h,
         "Modificar alias", COLOR_PANEL, COLOR_BORDE);
-
     Boton btn_volver = boton_crear(col1, panel_y + panel_h - 60,
         btn_w * 2 + gap, 44, "Volver", COLOR_PANEL, COLOR_BORDE);
 
-    // Formulario de monto (compartido entre ingresar/retirar)
+    // Formulario (monto o alias segun el modo)
     int form_y = fila2 + btn_h + 30;
-    Input in_monto = input_crear(col1, form_y, 300, 42, "Monto", 0);
+    Input in_campo = input_crear(col1, form_y, 300, 42, "", 0);
     Boton btn_confirmar = boton_crear(col1 + 310, form_y, 130, 42,
         "Confirmar", COLOR_EXITO, COLOR_EXITO);
 
@@ -76,7 +75,6 @@ Navegacion pantalla_cuenta(Ventana *v, Cuenta *cuenta) {
         int mx, my;
         SDL_GetMouseState(&mx, &my);
 
-        // ---------------- EVENTOS ----------------
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
                 v->corriendo = 0;
@@ -84,61 +82,76 @@ Navegacion pantalla_cuenta(Ventana *v, Cuenta *cuenta) {
             }
 
             if (modo == MODO_VER) {
-                // Abrir formularios o navegar
                 if (boton_fue_clickeado(&btn_ingresar, &e)) {
                     modo = MODO_INGRESAR;
-                    input_limpiar(&in_monto);
-                    in_monto.activo = 1;
+                    input_limpiar(&in_campo);
+                    strcpy(in_campo.placeholder, "Monto");
+                    in_campo.activo = 1;
                     mensaje[0] = '\0';
                 }
                 if (boton_fue_clickeado(&btn_retirar, &e)) {
                     modo = MODO_RETIRAR;
-                    input_limpiar(&in_monto);
-                    in_monto.activo = 1;
+                    input_limpiar(&in_campo);
+                    strcpy(in_campo.placeholder, "Monto");
+                    in_campo.activo = 1;
                     mensaje[0] = '\0';
                 }
                 if (boton_fue_clickeado(&btn_transferir, &e))
                     siguiente = NAV_TRANSFERIR;
                 if (boton_fue_clickeado(&btn_alias, &e)) {
-                    strcpy(mensaje, "Modificar alias: pendiente");
-                    color_msg = COLOR_TEXTO_SUAVE;
+                    modo = MODO_ALIAS;
+                    input_limpiar(&in_campo);
+                    strcpy(in_campo.placeholder, "Nuevo alias (sin sufijo)");
+                    in_campo.activo = 1;
+                    mensaje[0] = '\0';
                 }
                 if (boton_fue_clickeado(&btn_volver, &e))
                     siguiente = NAV_SELECCION_CUENTA;
             } else {
-                // En modo formulario: capturar monto
-                input_manejar_evento(&in_monto, &e);
+                input_manejar_evento(&in_campo, &e);
 
                 int enter = (e.type == SDL_KEYDOWN &&
                              e.key.keysym.sym == SDLK_RETURN);
                 int escape = (e.type == SDL_KEYDOWN &&
                               e.key.keysym.sym == SDLK_ESCAPE);
 
-                if (escape) {
-                    modo = MODO_VER;
-                    mensaje[0] = '\0';
-                }
+                if (escape) { modo = MODO_VER; mensaje[0] = '\0'; }
 
                 if (boton_fue_clickeado(&btn_confirmar, &e) || enter) {
-                    double monto = atof(in_monto.texto);
-                    ResultadoOp r;
+                    if (modo == MODO_ALIAS) {
+                        if (in_campo.largo == 0) {
+                            strcpy(mensaje, "El alias no puede estar vacio");
+                            color_msg = COLOR_PELIGRO;
+                        } else {
+                            char alias_nuevo[50];
+                            armarAlias(alias_nuevo, in_campo.texto, cuenta->moneda);
+                            if (!aliasUnico(alias_nuevo)) {
+                                strcpy(mensaje, "Ese alias ya esta en uso");
+                                color_msg = COLOR_PELIGRO;
+                            } else {
+                                strcpy(cuenta->alias, alias_nuevo);
+                                guardarCambiosCuenta(cuenta);
+                                strcpy(mensaje, "Alias actualizado");
+                                color_msg = COLOR_EXITO;
+                                modo = MODO_VER;
+                            }
+                        }
+                    } else {
+                        double monto = atof(in_campo.texto);
+                        ResultadoOp r;
+                        if (modo == MODO_INGRESAR)
+                            r = ingresarDinero_op(cuenta, monto);
+                        else
+                            r = retirarDinero_op(cuenta, monto);
 
-                    if (modo == MODO_INGRESAR)
-                        r = ingresarDinero_op(cuenta, monto);
-                    else
-                        r = retirarDinero_op(cuenta, monto);
-
-                    strcpy(mensaje, mensaje_resultado(r));
-                    color_msg = (r == OP_OK) ? COLOR_EXITO : COLOR_PELIGRO;
-
-                    if (r == OP_OK) {
-                        modo = MODO_VER;   // volver a la vista, saldo ya actualizado
+                        strcpy(mensaje, mensaje_resultado(r));
+                        color_msg = (r == OP_OK) ? COLOR_EXITO : COLOR_PELIGRO;
+                        if (r == OP_OK) modo = MODO_VER;
                     }
                 }
             }
         }
 
-        // Hover
         if (modo == MODO_VER) {
             boton_actualizar_hover(&btn_ingresar, mx, my);
             boton_actualizar_hover(&btn_retirar, mx, my);
@@ -149,18 +162,15 @@ Navegacion pantalla_cuenta(Ventana *v, Cuenta *cuenta) {
             boton_actualizar_hover(&btn_confirmar, mx, my);
         }
 
-        // ---------------- DIBUJO ----------------
         ventana_limpiar(v);
         panel_dibujar(v, panel, COLOR_PANEL, COLOR_BORDE);
 
-        // Encabezado: moneda
         char titulo[64];
         snprintf(titulo, sizeof(titulo), "Cuenta en %s",
                  cuenta->moneda == PESOS ? "Pesos" : "Dolares");
         texto_dibujar(v, v->font_grande, titulo,
                       panel_x + 40, panel_y + 30, COLOR_TEXTO);
 
-        // Datos
         char linea[80];
         snprintf(linea, sizeof(linea), "CBU:   %s", cuenta->cbu);
         texto_dibujar(v, v->font_chico, linea,
@@ -169,7 +179,6 @@ Navegacion pantalla_cuenta(Ventana *v, Cuenta *cuenta) {
         texto_dibujar(v, v->font_chico, linea,
                       panel_x + 40, panel_y + 102, COLOR_TEXTO_SUAVE);
 
-        // Saldo (destacado)
         const char *simbolo = (cuenta->moneda == PESOS) ? "$" : "U$D ";
         snprintf(linea, sizeof(linea), "Saldo: %s%.2f", simbolo, cuenta->saldo);
         texto_dibujar(v, v->font_normal, linea,
@@ -182,22 +191,25 @@ Navegacion pantalla_cuenta(Ventana *v, Cuenta *cuenta) {
             boton_dibujar(v, &btn_alias);
             boton_dibujar(v, &btn_volver);
         } else {
-            // Formulario de monto
-            const char *etiqueta = (modo == MODO_INGRESAR)
-                                   ? "Ingresar - monto a depositar:"
-                                   : "Retirar - monto a extraer:";
-            texto_dibujar(v, v->font_normal, etiqueta,
-                          col1, fila1, COLOR_TEXTO);
-            input_dibujar(v, &in_monto);
+            const char *etiqueta;
+            if (modo == MODO_INGRESAR)     etiqueta = "Monto a depositar:";
+            else if (modo == MODO_RETIRAR) etiqueta = "Monto a extraer:";
+            else                           etiqueta = "Nuevo alias:";
+            texto_dibujar(v, v->font_normal, etiqueta, col1, fila1, COLOR_TEXTO);
+            input_dibujar(v, &in_campo);
             boton_dibujar(v, &btn_confirmar);
             texto_dibujar(v, v->font_chico, "Enter para confirmar, Esc para cancelar",
                           col1, form_y + 56, COLOR_TEXTO_SUAVE);
         }
 
-        // Mensaje de resultado
         if (mensaje[0] != '\0') {
+            // En modo formulario el mensaje va debajo del texto de ayuda;
+            // en modo VER va en la zona inferior (no molesta a los botones)
+            int msg_y = (modo == MODO_VER)
+                        ? panel_y + panel_h - 95
+                        : form_y + 82;
             texto_dibujar(v, v->font_normal, mensaje,
-                          panel_x + 40, panel_y + panel_h - 110, color_msg);
+                          panel_x + 40, msg_y, color_msg);
         }
 
         ventana_presentar(v);
