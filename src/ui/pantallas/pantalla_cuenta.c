@@ -111,9 +111,9 @@ Navegacion pantalla_cuenta(Ventana *v, Cuenta *cuenta) {
                 input_manejar_evento(&in_campo, &e);
 
                 int enter = (e.type == SDL_KEYDOWN &&
-                             e.key.keysym.sym == SDLK_RETURN);
+                            e.key.keysym.sym == SDLK_RETURN);
                 int escape = (e.type == SDL_KEYDOWN &&
-                              e.key.keysym.sym == SDLK_ESCAPE);
+                            e.key.keysym.sym == SDLK_ESCAPE);
 
                 if (escape) { modo = MODO_VER; mensaje[0] = '\0'; }
 
@@ -167,22 +167,22 @@ Navegacion pantalla_cuenta(Ventana *v, Cuenta *cuenta) {
 
         char titulo[64];
         snprintf(titulo, sizeof(titulo), "Cuenta en %s",
-                 cuenta->moneda == PESOS ? "Pesos" : "Dolares");
+                cuenta->moneda == PESOS ? "Pesos" : "Dolares");
         texto_dibujar(v, v->font_grande, titulo,
-                      panel_x + 40, panel_y + 30, COLOR_TEXTO);
+                    panel_x + 40, panel_y + 30, COLOR_TEXTO);
 
         char linea[80];
         snprintf(linea, sizeof(linea), "CBU:   %s", cuenta->cbu);
         texto_dibujar(v, v->font_chico, linea,
-                      panel_x + 40, panel_y + 80, COLOR_TEXTO_SUAVE);
+                    panel_x + 40, panel_y + 80, COLOR_TEXTO_SUAVE);
         snprintf(linea, sizeof(linea), "Alias: %s", cuenta->alias);
         texto_dibujar(v, v->font_chico, linea,
-                      panel_x + 40, panel_y + 102, COLOR_TEXTO_SUAVE);
+                    panel_x + 40, panel_y + 102, COLOR_TEXTO_SUAVE);
 
         const char *simbolo = (cuenta->moneda == PESOS) ? "$" : "U$D ";
         snprintf(linea, sizeof(linea), "Saldo: %s%.2f", simbolo, cuenta->saldo);
         texto_dibujar(v, v->font_normal, linea,
-                      panel_x + 40, panel_y + 135, COLOR_TEXTO);
+                    panel_x + 40, panel_y + 135, COLOR_TEXTO);
 
         if (modo == MODO_VER) {
             boton_dibujar(v, &btn_ingresar);
@@ -199,7 +199,7 @@ Navegacion pantalla_cuenta(Ventana *v, Cuenta *cuenta) {
             input_dibujar(v, &in_campo);
             boton_dibujar(v, &btn_confirmar);
             texto_dibujar(v, v->font_chico, "Enter para confirmar, Esc para cancelar",
-                          col1, form_y + 56, COLOR_TEXTO_SUAVE);
+                        col1, form_y + 56, COLOR_TEXTO_SUAVE);
         }
 
         if (mensaje[0] != '\0') {
@@ -209,7 +209,7 @@ Navegacion pantalla_cuenta(Ventana *v, Cuenta *cuenta) {
                         ? panel_y + panel_h - 95
                         : form_y + 82;
             texto_dibujar(v, v->font_normal, mensaje,
-                          panel_x + 40, msg_y, color_msg);
+                        panel_x + 40, msg_y, color_msg);
         }
 
         ventana_presentar(v);

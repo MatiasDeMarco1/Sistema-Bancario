@@ -31,7 +31,7 @@ Navegacion pantalla_seleccion_cuenta(Ventana *v, Cliente *cliente,
     SDL_Rect cards[MAX_CUENTAS];
     for (int i = 0; i < n; i++) {
         cards[i] = (SDL_Rect){ card_x, card_y0 + i * (card_h + card_gap),
-                               card_w, card_h };
+                            card_w, card_h };
     }
 
     // Boton volver
@@ -81,7 +81,7 @@ Navegacion pantalla_seleccion_cuenta(Ventana *v, Cliente *cliente,
         panel_dibujar(v, panel, COLOR_PANEL, COLOR_BORDE);
 
         texto_dibujar(v, v->font_grande, "Seleccionar cuenta",
-                      panel_x + 40, panel_y + 40, COLOR_TEXTO);
+                    panel_x + 40, panel_y + 40, COLOR_TEXTO);
 
         // Tarjetas de cuenta
         for (int i = 0; i < n; i++) {
@@ -91,27 +91,27 @@ Navegacion pantalla_seleccion_cuenta(Ventana *v, Cliente *cliente,
 
             // Moneda (titulo de la tarjeta)
             const char *moneda = (cuentas[i].moneda == PESOS)
-                                 ? "Cuenta en Pesos" : "Cuenta en Dolares";
+                                ? "Cuenta en Pesos" : "Cuenta en Dolares";
             texto_dibujar(v, v->font_normal, moneda,
-                          cards[i].x + 20, cards[i].y + 16, COLOR_TEXTO);
+                        cards[i].x + 20, cards[i].y + 16, COLOR_TEXTO);
 
             // Saldo
             char saldo[64];
             const char *simbolo = (cuentas[i].moneda == PESOS) ? "$" : "U$D ";
             snprintf(saldo, sizeof(saldo), "Saldo: %s%.2f",
-                     simbolo, cuentas[i].saldo);
+                    simbolo, cuentas[i].saldo);
             texto_dibujar(v, v->font_chico, saldo,
-                          cards[i].x + 20, cards[i].y + 48, COLOR_TEXTO_SUAVE);
+                        cards[i].x + 20, cards[i].y + 48, COLOR_TEXTO_SUAVE);
 
             // Alias (a la derecha, en chico)
             texto_dibujar(v, v->font_chico, cuentas[i].alias,
-                          cards[i].x + 20, cards[i].y + 66, COLOR_TEXTO_SUAVE);
+                        cards[i].x + 20, cards[i].y + 66, COLOR_TEXTO_SUAVE);
         }
 
         // Si no tiene cuentas (no deberia pasar viniendo del menu, pero por las dudas)
         if (n == 0) {
             texto_dibujar(v, v->font_normal, "No tenes cuentas activas.",
-                          panel_x + 40, card_y0, COLOR_TEXTO_SUAVE);
+                        panel_x + 40, card_y0, COLOR_TEXTO_SUAVE);
         }
 
         boton_dibujar(v, &btn_volver);

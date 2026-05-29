@@ -59,7 +59,7 @@ Navegacion pantalla_menu(Ventana *v, Cliente *cliente) {
     ModoMenu modo = MODO_MENU;
     char saludo[120];
     snprintf(saludo, sizeof(saludo), "Hola, %s %s",
-             cliente->nombre, cliente->apellido);
+            cliente->nombre, cliente->apellido);
     char mensaje[80] = "";
 
     SDL_Event e;
@@ -104,14 +104,14 @@ Navegacion pantalla_menu(Ventana *v, Cliente *cliente) {
                 input_manejar_evento(&in_alias, &e);
 
                 int escape = (e.type == SDL_KEYDOWN &&
-                              e.key.keysym.sym == SDLK_ESCAPE);
+                            e.key.keysym.sym == SDLK_ESCAPE);
                 if (escape || boton_fue_clickeado(&btn_cancelar, &e)) {
                     modo = MODO_MENU;
                     mensaje[0] = '\0';
                 }
 
                 int enter = (e.type == SDL_KEYDOWN &&
-                             e.key.keysym.sym == SDLK_RETURN);
+                            e.key.keysym.sym == SDLK_RETURN);
                 if (boton_fue_clickeado(&btn_confirmar, &e) || enter) {
                     if (in_alias.largo == 0) {
                         strcpy(mensaje, "El alias no puede estar vacio");
@@ -159,19 +159,19 @@ Navegacion pantalla_menu(Ventana *v, Cliente *cliente) {
         panel_dibujar(v, panel, COLOR_PANEL, COLOR_BORDE);
 
         texto_dibujar(v, v->font_grande, saludo,
-                      panel_x + 40, panel_y + 40, COLOR_TEXTO);
+                    panel_x + 40, panel_y + 40, COLOR_TEXTO);
 
         if (modo == MODO_MENU) {
             char estado[120];
             if (tieneAlguna)
                 snprintf(estado, sizeof(estado), "Cuentas: %s%s%s",
-                         tienePesos ? "Pesos" : "",
-                         (tienePesos && tieneDolares) ? " y " : "",
-                         tieneDolares ? "Dolares" : "");
+                        tienePesos ? "Pesos" : "",
+                        (tienePesos && tieneDolares) ? " y " : "",
+                        tieneDolares ? "Dolares" : "");
             else
                 strcpy(estado, "Todavia no tenes cuentas");
             texto_dibujar(v, v->font_chico, estado,
-                          panel_x + 40, panel_y + 90, COLOR_TEXTO_SUAVE);
+                        panel_x + 40, panel_y + 90, COLOR_TEXTO_SUAVE);
 
             // Botones de cuentas (gris si no tiene)
             if (tieneAlguna) {
@@ -180,10 +180,10 @@ Navegacion pantalla_menu(Ventana *v, Cliente *cliente) {
             } else {
                 rect_relleno(v, btn_seleccionar.rect, COLOR_BORDE);
                 texto_centrado(v, v->font_normal, btn_seleccionar.texto,
-                               btn_seleccionar.rect, COLOR_TEXTO_SUAVE);
+                            btn_seleccionar.rect, COLOR_TEXTO_SUAVE);
                 rect_relleno(v, btn_historial.rect, COLOR_BORDE);
                 texto_centrado(v, v->font_normal, btn_historial.texto,
-                               btn_historial.rect, COLOR_TEXTO_SUAVE);
+                            btn_historial.rect, COLOR_TEXTO_SUAVE);
             }
 
             // Botones de crear solo si falta esa moneda
@@ -197,14 +197,14 @@ Navegacion pantalla_menu(Ventana *v, Cliente *cliente) {
                 ? "Nueva cuenta en Pesos - elegi un alias:"
                 : "Nueva cuenta en Dolares - elegi un alias:";
             texto_dibujar(v, v->font_normal, etiqueta,
-                          btn_x, y0, COLOR_TEXTO);
+                        btn_x, y0, COLOR_TEXTO);
 
             const char *sufijo = (modo == MODO_CREAR_PESOS)
                 ? "Se agregara .ars al final"
                 : "Se agregara .usd al final";
             input_dibujar(v, &in_alias);
             texto_dibujar(v, v->font_chico, sufijo,
-                          btn_x, y0 + 88, COLOR_TEXTO_SUAVE);
+                        btn_x, y0 + 88, COLOR_TEXTO_SUAVE);
 
             boton_dibujar(v, &btn_confirmar);
             boton_dibujar(v, &btn_cancelar);
@@ -213,7 +213,7 @@ Navegacion pantalla_menu(Ventana *v, Cliente *cliente) {
         // Mensaje de error
         if (mensaje[0] != '\0') {
             texto_dibujar(v, v->font_chico, mensaje,
-                          panel_x + 40, panel_y + panel_h - 28, COLOR_PELIGRO);
+                        panel_x + 40, panel_y + panel_h - 28, COLOR_PELIGRO);
         }
 
         ventana_presentar(v);

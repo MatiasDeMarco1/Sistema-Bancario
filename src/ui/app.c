@@ -11,9 +11,9 @@
 #include "cuenta.h"
 #include <stdio.h>
 
-int main(int argc, char *argv[]) {
+void iniciarApp(void) {
     Ventana v;
-    if (!ventana_init(&v)) return 1;
+    if (!ventana_init(&v)) return;
 
     Cliente cliente;
     Cuenta  cuenta;
@@ -22,41 +22,31 @@ int main(int argc, char *argv[]) {
 
     while (actual != NAV_SALIR && v.corriendo) {
         switch (actual) {
-
             case NAV_LOGIN:
                 actual = pantalla_login(&v, &cliente);
                 break;
-
             case NAV_REGISTRO:
                 actual = pantalla_registro(&v);
                 break;
-
             case NAV_MENU:
                 actual = pantalla_menu(&v, &cliente);
                 break;
-
             case NAV_SELECCION_CUENTA:
                 actual = pantalla_seleccion_cuenta(&v, &cliente, &cuenta);
                 break;
-
             case NAV_CUENTA:
                 actual = pantalla_cuenta(&v, &cuenta);
                 break;
-
             case NAV_TRANSFERIR:
                 actual = pantalla_transferir(&v, &cuenta);
                 break;
-
             case NAV_HISTORIAL:
                 actual = pantalla_historial(&v, &cliente);
                 break;
-
             default:
                 actual = NAV_SALIR;
         }
     }
 
     ventana_destruir(&v);
-    printf("Aplicacion cerrada.\n");
-    return 0;
 }
