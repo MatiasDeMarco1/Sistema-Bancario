@@ -4,39 +4,43 @@
 # ============================================================
 
 CC = gcc
-
 INCLUDES = -Ilogica -Iui -Iui/pantallas
 CFLAGS = -Wall $(INCLUDES) $(shell sdl2-config --cflags)
 LIBS = $(shell sdl2-config --libs) -lSDL2_ttf
 
-# Logica de negocio
+# Logica compartida por ambas versiones
 SRC_LOGICA = logica/cliente.c logica/login.c logica/validaciones.c \
-             logica/cuenta.c logica/operaciones.c logica/historial.c
+            logica/cuenta.c logica/operaciones.c logica/historial.c \
+            logica/menu.c
 
-# Capa de UI (SDL2)
-SRC_UI = ui/ventana.c ui/componentes.c \
-         ui/pantallas/pantalla_login.c \
-         ui/pantallas/pantalla_registro.c \
-         ui/pantallas/pantalla_menu.c \
-         ui/pantallas/pantalla_seleccion_cuenta.c \
-         ui/pantallas/pantalla_cuenta.c \
-         ui/pantallas/pantalla_transferir.c \
-         ui/pantallas/pantalla_historial.c
+# UI (solo la version grafica)
+SRC_UI = ui/ventana.c ui/componentes.c ui/app.c \
+        ui/pantallas/pantalla_login.c \
+        ui/pantallas/pantalla_registro.c \
+        ui/pantallas/pantalla_menu.c \
+        ui/pantallas/pantalla_seleccion_cuenta.c \
+        ui/pantallas/pantalla_cuenta.c \
+        ui/pantallas/pantalla_transferir.c \
+        ui/pantallas/pantalla_historial.c
 
-SRC_MAIN = test_app.c
+# --- Objetivos ---
+all: banco banco_consola
 
-SRCS = $(SRC_MAIN) $(SRC_LOGICA) $(SRC_UI)
-TARGET = test_app
+# Version grafica (logica + UI + SDL)
+banco: main_grafico.c $(SRC_LOGICA) $(SRC_UI)
+	$(CC) $(CFLAGS) main_grafico.c $(SRC_LOGICA) $(SRC_UI) -o banco $(LIBS)
 
-all: $(TARGET)
+# Version consola (solo logica, sin SDL)
+banco_consola: main_consola.c $(SRC_LOGICA)
+	$(CC) -Wall -Ilogica main_consola.c $(SRC_LOGICA) -o banco_consola
 
-$(TARGET): $(SRCS)
-	$(CC) $(CFLAGS) $(SRCS) -o $(TARGET) $(LIBS)
+run: banco
+	./banco
 
-run: $(TARGET)
-	./$(TARGET)
+run-consola: banco_consola
+	./banco_consola
 
 clean:
-	rm -f $(TARGET)
+	rm -f banco banco_consola
 
-.PHONY: all run clean
+.PHONY: all run run-consola clean

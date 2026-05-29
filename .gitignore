@@ -1,0 +1,4 @@
+datos/*.dat
+banco
+banco_consola
+*.o
