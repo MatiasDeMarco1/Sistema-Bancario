@@ -36,9 +36,6 @@ void editarLocalidad(Cliente *c);
 void editarPais(Cliente *c);
 void editarContrasena(Cliente *c);
 
-// Validaciones
-void validarContrasena(char *buffer, int tamBuffer);
-
 // Archivo
 void guardarCliente(Cliente *c);
 int  buscarCliente(int id, Cliente *c);
