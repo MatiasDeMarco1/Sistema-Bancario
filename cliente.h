@@ -27,9 +27,6 @@ void mostrarCliente(Cliente *c);
 void mostrarTodos();
 
 // Editar campos
-void editarNombre(Cliente *c);
-void editarApellido(Cliente *c);
-void editarCUIT(Cliente *c);
 void editarMail(Cliente *c);
 void editarTelefono(Cliente *c);
 void editarLocalidad(Cliente *c);
