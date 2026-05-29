@@ -258,4 +258,4 @@ ResultadoRegistro crearCliente_op(Cliente *c) {
 
     guardarCliente(c);
     return REG_OK;
-} 
+}
