@@ -3,4 +3,4 @@
 #include <stdlib.h>
 #include "cliente.h"
 
-void verificarIngreso(Cliente *c);
+int login(Cliente *c);

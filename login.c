@@ -4,46 +4,32 @@
 #include "cliente.h"
 #include "login.h"
 
-void verificarIngreso(Cliente *c) {
-    char buffer[100];
-    char contrasena[100];
-    int opcion;
+#define ARCHIVO "./datos/clientes.dat"
 
-    printf("Ingrese con que opcion desea ingresar: ");
-    printf("1. Mail\n");
-    printf("2. CUIT\n");
-    printf("3. Telefono\n");
-    printf("Opcion: ");
-    scanf("%d", &opcion);
-    getchar(); // Consume the newline character left by scanf
+int login(Cliente *c) {
+    char identificador[80];
+    char contrasena[64];
 
-    switch (opcion) {
-        case 1:
-            printf("Ingrese el mail: ");
-            fgets(buffer, sizeof(buffer), stdin);
-            buffer[strcspn(buffer, "\n")] = '\0'; // Remove newline character
-            break;
-        case 2:
-            printf("Ingrese el CUIT: ");
-            scanf("%ld", &c->cuit);
-            getchar(); // Consume the newline character left by scanf
-            break;
-        case 3:
-            printf("Ingrese el telefono: ");
-            fgets(buffer, sizeof(buffer), stdin);
-            buffer[strcspn(buffer, "\n")] = '\0'; // Remove newline character
-            break;
-        default:
-            printf("Opcion invalida.\n");
-    }
+    printf("Ingrese CUIT, mail o telefono: ");
+    fgets(identificador, sizeof(identificador), stdin);
+    identificador[strcspn(identificador, "\n")] = '\0';
 
-    printf("Ingrese la contrasena: ");
+    printf("Ingrese contrasena: ");
     fgets(contrasena, sizeof(contrasena), stdin);
-    contrasena[strcspn(contrasena, "\n")] = '\0'; // Remove newline character
+    contrasena[strcspn(contrasena, "\n")] = '\0';
 
-    if ((strcmp(buffer, c->mail) == 0 || atol(buffer) == c->cuit || atol(buffer) == c->telefono) && strcmp(contrasena, c->contrasena) == 0) {
-        printf("Ingreso exitoso.\n");
-    } else {
-        printf("Ingreso fallido. Credenciales incorrectas.\n");
+    FILE *f = fopen(ARCHIVO, "rb");
+    if (f == NULL) { printf("Error al abrir archivo.\n"); return 0; }
+
+    while (fread(c, sizeof(Cliente), 1, f)) {
+        if ((strcmp(c->cuit,     identificador) == 0 ||
+             strcmp(c->mail,     identificador) == 0 ||
+             strcmp(c->telefono, identificador) == 0) &&
+             strcmp(c->contrasena, contrasena)  == 0) {
+            fclose(f);
+            return 1;
+        }
     }
+    fclose(f);
+    return 0;
 }

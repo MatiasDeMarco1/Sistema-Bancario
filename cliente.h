@@ -17,7 +17,7 @@ typedef struct {
     int  activo;
 } Cliente;
 
-int login(Cliente *c);
+
 
 // ABM
 void crearCliente(Cliente *c);
