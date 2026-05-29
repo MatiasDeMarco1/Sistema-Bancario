@@ -22,20 +22,20 @@ typedef struct {
 // ABM
 void crearCliente(Cliente *c);
 void eliminarCliente(char *c);
-void editarCliente(Cliente *c);
-void mostrarCliente(Cliente *c);
-void mostrarTodos();
+/* void editarCliente(Cliente *c); */
+/* void mostrarCliente(Cliente *c);
+void mostrarTodos(); */
 
 // Editar campos
-void editarMail(Cliente *c);
+/* void editarMail(Cliente *c);
 void editarTelefono(Cliente *c);
 void editarLocalidad(Cliente *c);
 void editarPais(Cliente *c);
-void editarContrasena(Cliente *c);
+void editarContrasena(Cliente *c); */
 
 // Archivo
 void guardarCliente(Cliente *c);
-int  buscarCliente(int id, Cliente *c);
+/* int  buscarCliente(int id, Cliente *c); */
 void guardarCambios(Cliente *c);
 
 typedef enum {

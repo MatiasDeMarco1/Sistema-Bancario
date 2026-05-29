@@ -9,6 +9,11 @@
 
 // ---- ARCHIVO ----
 
+/*  Abre archivo en forma ab -> Agregar binario
+    Si archivo no existe, muestra mensaje de error
+    Recibe puntero de estructura Cuenta
+    Guarda al final del archivo la nueva cuenta
+*/
 void guardarCuenta(Cuenta *c) {
     FILE *f = fopen(ARCHIVO_CUENTAS, "ab");
     if (f == NULL) { printf("Error al abrir archivo.\n"); return; }
@@ -16,14 +21,27 @@ void guardarCuenta(Cuenta *c) {
     fclose(f);
 }
 
-int buscarCuenta(int id, Cuenta *c) {
+/*  Abre archivo en forma rb -> Leer binario
+    Recibe id y puntero de estructura Cuenta
+    Mensaje de error si archivo no existe
+    Busca en el archivo, el id de la cuenta, retorna si la encontro.
+*/
+
+/* int buscarCuenta(int id, Cuenta *c) {
     FILE *f = fopen(ARCHIVO_CUENTAS, "rb");
     if (f == NULL) { printf("Error al abrir archivo.\n"); return 0; }
     fseek(f, (id - 1) * sizeof(Cuenta), SEEK_SET);
     int leido = fread(c, sizeof(Cuenta), 1, f);
     fclose(f);
     return leido;
-}
+} */
+
+
+/*  Recibe puntero de estructura Cuenta
+    Se abre archivo en r+b -> Permite leer y escribir binario
+    Da error si archivo no existe
+    guarda los cambios en el archivo, no elimina, solo MODIFICA
+*/
 
 void guardarCambiosCuenta(Cuenta *c) {
     FILE *f = fopen(ARCHIVO_CUENTAS, "r+b");
@@ -35,6 +53,9 @@ void guardarCambiosCuenta(Cuenta *c) {
 
 // ---- CBU Y ALIAS ----
 
+/*  Genera un CBU randon con una cantidad limitada de caracteres
+    Recibe como puntero el valor CBU tipo CHAR
+*/
 void generarCBU(char *cbu) {
     srand(time(NULL));
     for (int i = 0; i < 22; i++)
@@ -42,6 +63,14 @@ void generarCBU(char *cbu) {
     cbu[22] = '\0';
 }
 
+/*  Se ingresa el alias que quiere el cliente, lo recibe como puntero
+    Recibe el enum MONEDA (PESOS - DOLARES)
+    El tipo de moneda sirve para saber que tipo de cuenta cada alias y su sufijo
+    .ars -> Pesos (Inflacion)
+    .usd -> Dolares ($$$$$$$$$$$)
+    Si se quiere hacer un alias vacio -> "", retorna error...
+    Guarda el alias en la cuenta
+*/
 void pedirAlias(char *alias, Moneda moneda) {
     char base[40];
     const char *sufijo = (moneda == PESOS) ? ".ars" : ".usd";
@@ -59,6 +88,8 @@ void pedirAlias(char *alias, Moneda moneda) {
 
 // ---- ABM ----
 
+/*
+*/
 int clienteTieneCuenta(char *cuit, Moneda moneda) {
     FILE *f = fopen(ARCHIVO_CUENTAS, "rb");
     if (f == NULL) return 0;

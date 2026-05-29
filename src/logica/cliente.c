@@ -8,7 +8,11 @@
 
 // ---- ARCHIVO ----
 
-
+/* Recibe la estructura de Cliente como puntero 
+FILE -> abre el archivo en en ab -> agregar binario
+si no es posible abrir el archivo (se elimino o algun error de algo), devuelve el mensaje de error
+Se escribe en lo ultimo, el nuevo cliente.
+*/
 void guardarCliente(Cliente *c) {
     FILE *f = fopen(ARCHIVO, "ab");
     if (f == NULL) { printf("Error al abrir archivo.\n"); return; }
@@ -16,14 +20,15 @@ void guardarCliente(Cliente *c) {
     fclose(f);
 }
 
-int buscarCliente(int id, Cliente *c) {
+
+/* int buscarCliente(int id, Cliente *c) {
     FILE *f = fopen(ARCHIVO, "rb");
     if (f == NULL) { printf("Error al abrir archivo.\n"); return 0; }
     fseek(f, (id - 1) * sizeof(Cliente), SEEK_SET);
     int leido = fread(c, sizeof(Cliente), 1, f);
     fclose(f);
     return leido;
-}
+} */
 
 void guardarCambios(Cliente *c) {
     FILE *f = fopen(ARCHIVO, "r+b");
@@ -35,6 +40,12 @@ void guardarCambios(Cliente *c) {
 
 // ---- ABM ----
 
+/* Recibe como puntero estructura Cliente
+    Archivo se abre como rb -> Leer binario
+    Si no hay nada en el archivo, id es valor 1 (primer cliente)
+    Sino, busca el final del archivo, el id del ultimo cliente cargado y le da el valor id+1
+    Se ingresan los datos y se validan en validaciones.c
+*/
 void crearCliente(Cliente *c) {
     FILE *f = fopen(ARCHIVO, "rb");
     if (f == NULL) {
@@ -99,6 +110,14 @@ void crearCliente(Cliente *c) {
     guardarCliente(c);
 }
 
+/*  Baja logica de cliente -> Activa de 1 a 0
+    Se lee archivo en rb -> Leer binario
+    Retorna error si el archivo no existe
+    Recibe como parametros el CUIT del cliente (Al ser unico)
+    CUIT encontrado -> Activo = 0
+    Guarda cambios
+    Si no encontro Cliente con ese CUIT -> Da el error (como se hace ya logeado, seria un bug que no de un return)
+*/
 void eliminarCliente(char *cuit) {
     FILE *f = fopen(ARCHIVO, "rb");
     if (f == NULL) { printf("Error al abrir archivo.\n"); return; }
@@ -115,7 +134,7 @@ void eliminarCliente(char *cuit) {
     printf("Cliente no encontrado.\n");
 }
 
-void editarCliente(Cliente *c) {
+/* void editarCliente(Cliente *c) {
     int opcion;
     printf("Seleccione el campo a editar:\n");
     printf("1. Mail\n");
@@ -137,13 +156,13 @@ void editarCliente(Cliente *c) {
     }
 
     guardarCambios(c); // guarda en el archivo despues de editar
-}
+} */
 
 // ---- EDITAR CAMPOS ----
 
 
 
-void editarMail(Cliente *c) {
+/* void editarMail(Cliente *c) {
     do {
         printf("Ingrese el nuevo mail: ");
         fgets(c->mail, sizeof(c->mail), stdin);
@@ -179,10 +198,10 @@ void editarContrasena(Cliente *c) {
     char buffer[100];
     validarContrasena(buffer, sizeof(buffer));
     strcpy(c->contrasena, buffer);
-}
+} */
 // ---- MOSTRAR ----
 
-void mostrarCliente(Cliente *c) {
+/* void mostrarCliente(Cliente *c) {
     if (c == NULL || !c->activo) {
         printf("El cliente no existe.\n");
         return;
