@@ -141,7 +141,7 @@ Navegacion pantalla_registro(Ventana *v) {
         panel_dibujar(v, panel, COLOR_PANEL, COLOR_BORDE);
 
         texto_dibujar(v, v->font_grande, "Crear cuenta nueva",
-                      campo_x, panel_y + 30, COLOR_TEXTO);
+                    campo_x, panel_y + 30, COLOR_TEXTO);
 
         for (int i = 0; i < CANT_CAMPOS; i++)
             input_dibujar(v, &campos[i]);
@@ -151,7 +151,7 @@ Navegacion pantalla_registro(Ventana *v) {
 
         if (mensaje[0] != '\0') {
             texto_dibujar(v, v->font_chico, mensaje,
-                          campo_x, by + 56, color_msg);
+                        campo_x, by + 56, color_msg);
         }
 
         ventana_presentar(v);

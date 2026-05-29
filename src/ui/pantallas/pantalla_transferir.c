@@ -89,7 +89,7 @@ Navegacion pantalla_transferir(Ventana *v, Cuenta *origen) {
                 } else {
                     double monto = atof(in_monto.texto);
                     ResultadoOp r = transferir_op(origen, metodo,
-                                                  in_destino.texto, monto);
+                                                in_destino.texto, monto);
                     strcpy(mensaje, mensaje_resultado(r));
                     color_msg = (r == OP_OK) ? COLOR_EXITO : COLOR_PELIGRO;
 
@@ -113,15 +113,15 @@ Navegacion pantalla_transferir(Ventana *v, Cuenta *origen) {
         panel_dibujar(v, panel, COLOR_PANEL, COLOR_BORDE);
 
         texto_dibujar(v, v->font_grande, "Transferir",
-                      x0, panel_y + 30, COLOR_TEXTO);
+                    x0, panel_y + 30, COLOR_TEXTO);
 
         // Saldo disponible
         char saldo[80];
         const char *simbolo = (origen->moneda == PESOS) ? "$" : "U$D ";
         snprintf(saldo, sizeof(saldo), "Disponible: %s%.2f",
-                 simbolo, origen->saldo);
+                simbolo, origen->saldo);
         texto_dibujar(v, v->font_chico, saldo,
-                      x0, panel_y + 75, COLOR_TEXTO_SUAVE);
+                    x0, panel_y + 75, COLOR_TEXTO_SUAVE);
 
         // Selector de metodo: resaltar el activo
         btn_cbu.color_fondo   = (metodo == 1) ? COLOR_PRIMARIO : COLOR_PANEL;
@@ -131,11 +131,11 @@ Navegacion pantalla_transferir(Ventana *v, Cuenta *origen) {
 
         // Inputs con etiquetas
         texto_dibujar(v, v->font_chico, "Destino:",
-                      x0, panel_y + 178, COLOR_TEXTO_SUAVE);
+                    x0, panel_y + 178, COLOR_TEXTO_SUAVE);
         input_dibujar(v, &in_destino);
 
         texto_dibujar(v, v->font_chico, "Monto:",
-                      x0, panel_y + 258, COLOR_TEXTO_SUAVE);
+                    x0, panel_y + 258, COLOR_TEXTO_SUAVE);
         input_dibujar(v, &in_monto);
 
         boton_dibujar(v, &btn_confirmar);
@@ -144,7 +144,7 @@ Navegacion pantalla_transferir(Ventana *v, Cuenta *origen) {
         // Mensaje
         if (mensaje[0] != '\0') {
             texto_dibujar(v, v->font_normal, mensaje,
-                          x0, panel_y + panel_h - 28, color_msg);
+                        x0, panel_y + panel_h - 28, color_msg);
         }
 
         ventana_presentar(v);
