@@ -16,7 +16,7 @@ static void imprimirMovimiento(Movimiento *m, char *cbu_consultado) {
             printf("Tipo:   Egreso\n");
             printf("Monto:  -%.2f\n", m->monto);
             break;
-        case TRANSFERENCIA_ENVIADA:
+        case TRANSFERENCIA:
             if (strcmp(m->cbu_origen, cbu_consultado) == 0) {
                 printf("Tipo:   Transferencia enviada\n");
                 printf("Para:   %s\n", m->cbu_destino);

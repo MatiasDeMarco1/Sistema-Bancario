@@ -28,55 +28,6 @@ static int proximoIdMovimiento(void) {
 }
 
 // ================================================================
-//  LISTAR MOVIMIENTOS
-// ================================================================
-
-static void imprimirMovimiento(const Movimiento *m) {
-    const char *tipo_str[] = { "INGRESO", "EGRESO", "TRANSFERENCIA" };
-    printf("  ID:      %d\n",     m->id);
-    printf("  Tipo:    %s\n",     tipo_str[m->tipo]);
-    printf("  Moneda:  %s\n",     m->moneda == PESOS ? "Pesos" : "Dolares");
-    printf("  Monto:   %.2f\n",   m->monto);
-    printf("  Origen:  CBU %s  (CUIT %s)\n", m->cbu_origen,  m->cuit_origen);
-    printf("  Destino: CBU %s  (CUIT %s)\n", m->cbu_destino, m->cuit_destino);
-    printf("  -------------------------\n");
-}
-
-/* Muestra todos los movimientos donde participa el CBU dado. */
-void listarMovimientosCuenta(const char *cbu) {
-    FILE *f = fopen(ARCHIVO_MOV, "rb");
-    if (f == NULL) { printf("No hay movimientos registrados.\n"); return; }
-
-    Movimiento m;
-    int encontrado = 0;
-    while (fread(&m, sizeof(Movimiento), 1, f)) {
-        if (strcmp(m.cbu_origen, cbu) == 0 || strcmp(m.cbu_destino, cbu) == 0) {
-            imprimirMovimiento(&m);
-            encontrado = 1;
-        }
-    }
-    if (!encontrado) printf("No hay movimientos para esta cuenta.\n");
-    fclose(f);
-}
-
-/* Muestra todos los movimientos donde participa el CUIT dado. */
-void listarMovimientosCliente(const char *cuit) {
-    FILE *f = fopen(ARCHIVO_MOV, "rb");
-    if (f == NULL) { printf("No hay movimientos registrados.\n"); return; }
-
-    Movimiento m;
-    int encontrado = 0;
-    while (fread(&m, sizeof(Movimiento), 1, f)) {
-        if (strcmp(m.cuit_origen, cuit) == 0 || strcmp(m.cuit_destino, cuit) == 0) {
-            imprimirMovimiento(&m);
-            encontrado = 1;
-        }
-    }
-    if (!encontrado) printf("No hay movimientos para este cliente.\n");
-    fclose(f);
-}
-
-// ================================================================
 //  OPERACIONES
 // ================================================================
 
