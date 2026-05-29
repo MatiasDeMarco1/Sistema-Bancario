@@ -129,3 +129,19 @@ void editarAlias(Cuenta *c) {
     guardarCambiosCuenta(c);
     printf("Alias actualizado: %s\n", c->alias);
 }
+
+int obtenerCuentasCliente(char *cuit, Cuenta cuentas[], int max) {
+    FILE *f = fopen(ARCHIVO_CUENTAS, "rb");
+    if (f == NULL) return 0;
+
+    Cuenta c;
+    int n = 0;
+    while (n < max && fread(&c, sizeof(Cuenta), 1, f)) {
+        if (strcmp(c.cliente_cuit, cuit) == 0 && c.activa) {
+            cuentas[n] = c;
+            n++;
+        }
+    }
+    fclose(f);
+    return n;
+}

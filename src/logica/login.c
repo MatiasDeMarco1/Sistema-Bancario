@@ -18,14 +18,18 @@ int login(Cliente *c) {
     fgets(contrasena, sizeof(contrasena), stdin);
     contrasena[strcspn(contrasena, "\n")] = '\0';
 
+    return login_validar(identificador, contrasena, c);
+}
+
+int login_validar(const char *identificador, const char *contrasena, Cliente *c) {
     FILE *f = fopen(ARCHIVO, "rb");
-    if (f == NULL) { printf("Error al abrir archivo.\n"); return 0; }
+    if (f == NULL) return 0;
 
     while (fread(c, sizeof(Cliente), 1, f)) {
         if ((strcmp(c->cuit,     identificador) == 0 ||
-             strcmp(c->mail,     identificador) == 0 ||
-             strcmp(c->telefono, identificador) == 0) &&
-             strcmp(c->contrasena, contrasena)  == 0) {
+            strcmp(c->mail,     identificador) == 0 ||
+            strcmp(c->telefono, identificador) == 0) &&
+            strcmp(c->contrasena, contrasena)  == 0) {
             fclose(f);
             return 1;
         }

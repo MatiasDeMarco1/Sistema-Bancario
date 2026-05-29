@@ -200,3 +200,91 @@ void transferir(Cuenta *origen, const char *cuit_titular) {
     printf("  Monto:        %.2f\n", monto);
     printf("  Saldo actual: %.2f\n", origen->saldo);
 }
+
+// Ingreso: el monto ya viene capturado desde la GUI
+ResultadoOp ingresarDinero_op(Cuenta *cuenta, double monto) {
+    if (monto <= 0) return OP_MONTO_INVALIDO;
+
+    cuenta->saldo += monto;
+    guardarCambiosCuenta(cuenta);
+
+    Movimiento m;
+    m.id     = proximoIdMovimiento();
+    m.tipo   = INGRESO;
+    m.moneda = cuenta->moneda;
+    m.monto  = monto;
+    strcpy(m.cuit_origen,  cuenta->cliente_cuit);
+    strcpy(m.cuit_destino, cuenta->cliente_cuit);
+    strcpy(m.cbu_origen,   cuenta->cbu);
+    strcpy(m.cbu_destino,  cuenta->cbu);
+    guardarMovimiento(&m);
+
+    return OP_OK;
+}
+
+ResultadoOp retirarDinero_op(Cuenta *cuenta, double monto) {
+    if (monto <= 0)            return OP_MONTO_INVALIDO;
+    if (monto > cuenta->saldo) return OP_SALDO_INSUFICIENTE;
+
+    cuenta->saldo -= monto;
+    guardarCambiosCuenta(cuenta);
+
+    Movimiento m;
+    m.id     = proximoIdMovimiento();
+    m.tipo   = EGRESO;
+    m.moneda = cuenta->moneda;
+    m.monto  = monto;
+    strcpy(m.cuit_origen,  cuenta->cliente_cuit);
+    strcpy(m.cuit_destino, cuenta->cliente_cuit);
+    strcpy(m.cbu_origen,   cuenta->cbu);
+    strcpy(m.cbu_destino,  cuenta->cbu);
+    guardarMovimiento(&m);
+
+    return OP_OK;
+}
+
+// Transferencia: recibe metodo (1=CBU, 2=alias), el dato de busqueda y el monto
+ResultadoOp transferir_op(Cuenta *origen, int metodo,
+                          const char *busqueda, double monto) {
+    // No transferir a la propia cuenta
+    if (metodo == 1 && strcmp(busqueda, origen->cbu)   == 0) return OP_MISMA_CUENTA;
+    if (metodo == 2 && strcmp(busqueda, origen->alias) == 0) return OP_MISMA_CUENTA;
+
+    // Buscar cuenta destino
+    FILE *f = fopen("./datos/cuentas.dat", "rb");
+    if (f == NULL) return OP_ERROR_ARCHIVO;
+
+    Cuenta destino;
+    int encontrada = 0;
+    while (fread(&destino, sizeof(Cuenta), 1, f)) {
+        if (!destino.activa) continue;
+        if (metodo == 1 && strcmp(destino.cbu,   busqueda) == 0) { encontrada = 1; break; }
+        if (metodo == 2 && strcmp(destino.alias, busqueda) == 0) { encontrada = 1; break; }
+    }
+    fclose(f);
+
+    if (!encontrada)                       return OP_DESTINO_NO_ENCONTRADO;
+    if (destino.moneda != origen->moneda)  return OP_DISTINTA_MONEDA;
+    if (monto <= 0)                        return OP_MONTO_INVALIDO;
+    if (monto > origen->saldo)             return OP_SALDO_INSUFICIENTE;
+
+    // Actualizar saldos
+    origen->saldo  -= monto;
+    destino.saldo  += monto;
+    guardarCambiosCuenta(origen);
+    guardarCambiosCuenta(&destino);
+
+    // Registrar movimiento
+    Movimiento m;
+    m.id     = proximoIdMovimiento();
+    m.tipo   = TRANSFERENCIA;
+    m.moneda = origen->moneda;
+    m.monto  = monto;
+    strcpy(m.cuit_origen,  origen->cliente_cuit);
+    strcpy(m.cuit_destino, destino.cliente_cuit);
+    strcpy(m.cbu_origen,   origen->cbu);
+    strcpy(m.cbu_destino,  destino.cbu);
+    guardarMovimiento(&m);
+
+    return OP_OK;
+}
