@@ -31,4 +31,13 @@ void editarAlias(Cuenta *c);
 void generarCBU(char *cbu);
 void pedirAlias(char *alias, Moneda moneda);
 
+// Llena el array 'cuentas' con las cuentas activas del cliente.
+// 'max' es la capacidad del array. Devuelve cuantas encontro.
+int obtenerCuentasCliente(char *cuit, Cuenta cuentas[], int max);
+
+void armarAlias(char *alias, const char *base, Moneda moneda);
+void crearCuenta_op(Cuenta *c, char *cuit, Moneda moneda, const char *alias);
+
+int cbuUnico(const char *cbu);
+int aliasUnico(const char *alias);
 #endif

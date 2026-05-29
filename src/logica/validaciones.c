@@ -184,3 +184,37 @@ int validar_cuil_unico(const char *cuit) {
     fclose(f);
     return 1; /* CUIL único, no encontrado */
 }
+
+// Valida la contrasena ya capturada (misma regla que validarContrasena).
+// Devuelve 1 si es valida, 0 si no.
+int validar_contrasena_str(const char *pass) {
+    return strlen(pass) >= 8;
+}
+
+int validar_mail_unico(const char *mail) {
+    FILE *f = fopen("./datos/clientes.dat", "rb");
+    if (f == NULL) return -1;
+    Cliente c;
+    while (fread(&c, sizeof(Cliente), 1, f) == 1) {
+        if (c.activo && strcmp(c.mail, mail) == 0) {
+            fclose(f);
+            return 0;
+        }
+    }
+    fclose(f);
+    return 1;
+}
+
+int validar_telefono_unico(const char *tel) {
+    FILE *f = fopen("./datos/clientes.dat", "rb");
+    if (f == NULL) return -1;
+    Cliente c;
+    while (fread(&c, sizeof(Cliente), 1, f) == 1) {
+        if (c.activo && strcmp(c.telefono, tel) == 0) {
+            fclose(f);
+            return 0;
+        }
+    }
+    fclose(f);
+    return 1;
+}

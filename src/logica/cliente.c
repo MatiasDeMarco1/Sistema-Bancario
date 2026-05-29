@@ -230,4 +230,32 @@ void mostrarTodos() {
     }
     if (!encontrado) printf("No hay clientes activos.\n");
     fclose(f);
+}
+
+
+ResultadoRegistro crearCliente_op(Cliente *c) {
+    if (c->nombre[0] == '\0' || c->apellido[0] == '\0' ||
+        c->localidad[0] == '\0' || c->pais[0] == '\0')
+        return REG_CAMPO_VACIO;
+
+    if (!validar_Cuil(c->cuit))              return REG_CUIT_INVALIDO;
+    if (validar_cuil_unico(c->cuit) != 1)    return REG_CUIT_DUPLICADO;
+    if (!validar_Mail(c->mail))              return REG_MAIL_INVALIDO;
+    if (validar_mail_unico(c->mail) != 1)    return REG_MAIL_DUPLICADO;
+    if (!validar_Telefono(c->telefono))      return REG_TELEFONO_INVALIDO;
+    if (validar_telefono_unico(c->telefono) != 1) return REG_TELEFONO_DUPLICADO;
+    if (!validar_contrasena_str(c->contrasena))   return REG_PASS_CORTA;
+
+    FILE *f = fopen(ARCHIVO, "rb");
+    if (f == NULL) {
+        c->id = 1;
+    } else {
+        fseek(f, 0, SEEK_END);
+        c->id = ftell(f) / sizeof(Cliente) + 1;
+        fclose(f);
+    }
+    c->activo = 1;
+
+    guardarCliente(c);
+    return REG_OK;
 } */

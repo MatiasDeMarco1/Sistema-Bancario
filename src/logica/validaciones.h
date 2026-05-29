@@ -9,4 +9,7 @@ int validar_Mail(const char *mail);
 int validar_Telefono(const char *tel);
 int validar_cuil_unico(const char *cuil);
 
+int validar_contrasena_str(const char *pass);
+int validar_mail_unico(const char *mail);
+int validar_telefono_unico(const char *tel);
 #endif

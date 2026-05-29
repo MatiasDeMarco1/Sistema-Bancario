@@ -38,4 +38,17 @@ void guardarCliente(Cliente *c);
 /* int  buscarCliente(int id, Cliente *c); */
 void guardarCambios(Cliente *c);
 
+typedef enum {
+    REG_OK,
+    REG_CUIT_INVALIDO,
+    REG_CUIT_DUPLICADO,
+    REG_MAIL_INVALIDO,
+    REG_MAIL_DUPLICADO,        
+    REG_TELEFONO_INVALIDO,
+    REG_TELEFONO_DUPLICADO,    
+    REG_PASS_CORTA,
+    REG_CAMPO_VACIO
+} ResultadoRegistro;
+
+ResultadoRegistro crearCliente_op(Cliente *c);
 #endif

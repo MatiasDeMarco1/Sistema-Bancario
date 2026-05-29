@@ -160,3 +160,79 @@ void editarAlias(Cuenta *c) {
     guardarCambiosCuenta(c);
     printf("Alias actualizado: %s\n", c->alias);
 }
+
+int obtenerCuentasCliente(char *cuit, Cuenta cuentas[], int max) {
+    FILE *f = fopen(ARCHIVO_CUENTAS, "rb");
+    if (f == NULL) return 0;
+
+    Cuenta c;
+    int n = 0;
+    while (n < max && fread(&c, sizeof(Cuenta), 1, f)) {
+        if (strcmp(c.cliente_cuit, cuit) == 0 && c.activa) {
+            cuentas[n] = c;
+            n++;
+        }
+    }
+    fclose(f);
+    return n;
+}
+
+// Arma el alias final agregando el sufijo segun la moneda.
+// 'base' es lo que escribio el usuario (sin sufijo).
+void armarAlias(char *alias, const char *base, Moneda moneda) {
+    const char *sufijo = (moneda == PESOS) ? ".ars" : ".usd";
+    snprintf(alias, 50, "%s%s", base, sufijo);
+}
+
+void crearCuenta_op(Cuenta *c, char *cuit, Moneda moneda, const char *alias) {
+    FILE *f = fopen(ARCHIVO_CUENTAS, "rb");
+    if (f == NULL) {
+        c->id = 1;
+    } else {
+        fseek(f, 0, SEEK_END);
+        c->id = ftell(f) / sizeof(Cuenta) + 1;
+        fclose(f);
+    }
+
+    strcpy(c->cliente_cuit, cuit);
+    c->moneda = moneda;
+    c->saldo  = 0.0;
+    c->activa = 1;
+
+    // Generar CBU hasta que sea unico
+    do {
+        generarCBU(c->cbu);
+    } while (!cbuUnico(c->cbu));
+
+    strcpy(c->alias, alias);   // alias ya viene validado y armado
+
+    guardarCuenta(c);
+}
+
+int cbuUnico(const char *cbu) {
+    FILE *f = fopen(ARCHIVO_CUENTAS, "rb");
+    if (f == NULL) return 1;   // no hay cuentas, es unico
+    Cuenta c;
+    while (fread(&c, sizeof(Cuenta), 1, f)) {
+        if (strcmp(c.cbu, cbu) == 0) {   // el CBU es unico aunque la cuenta este inactiva
+            fclose(f);
+            return 0;
+        }
+    }
+    fclose(f);
+    return 1;
+}
+
+int aliasUnico(const char *alias) {
+    FILE *f = fopen(ARCHIVO_CUENTAS, "rb");
+    if (f == NULL) return 1;
+    Cuenta c;
+    while (fread(&c, sizeof(Cuenta), 1, f)) {
+        if (c.activa && strcmp(c.alias, alias) == 0) {
+            fclose(f);
+            return 0;
+        }
+    }
+    fclose(f);
+    return 1;
+}
