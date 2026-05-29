@@ -170,33 +170,22 @@ void menuCuenta(Cuenta *cuenta) {
         getchar();
 
         switch (opcion) {
-            case 1: {
-                double monto;
-                printf("Ingrese el monto a depositar: ");
-                scanf("%lf", &monto);
-                getchar();
-                if (monto <= 0) {
-                    printf("El monto debe ser mayor a 0.\n");
-                } else {
-                    cuenta->saldo += monto;
-                    guardarCambiosCuenta(cuenta);
-                    printf("Saldo actualizado: %.2f\n", cuenta->saldo);
-                }
-                break;
-            }
-            case 2:
-                printf("Transferencias: proximamente.\n");
-                break;
-            case 3:
-                printf("Retiros: proximamente.\n");
-                break;
-            case 4:
-                editarAlias(cuenta);
-                break;
-            case 0:
-                break;
-            default:
-                printf("Opcion invalida.\n");
+        case 1:
+            ingresarDinero(cuenta);
+        break;
+        case 2:
+            transferir(cuenta, cuenta->cliente_cuit);
+        break;
+        case 3:
+            retirarDinero(cuenta);
+        break;
+        case 4:
+            editarAlias(cuenta);
+            break;
+        case 0:
+            break;
+        default:
+            printf("Opcion invalida.\n");
         }
     } while (opcion != 0);
 }

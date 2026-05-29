@@ -106,28 +106,51 @@ void retirarDinero(Cuenta *cuenta) {
  *   - Registra UN movimiento de tipo TRANSFERENCIA con origen y destino distintos.
  */
 void transferir(Cuenta *origen, const char *cuit_titular) {
-    char cbu_dest[23];
-    printf("Ingrese el CBU destino: ");
-    fgets(cbu_dest, sizeof(cbu_dest), stdin);
-    cbu_dest[strcspn(cbu_dest, "\n")] = '\0';
+    /* --- Elegir método de búsqueda --- */
+    int metodo;
+    printf("Transferir por:\n");
+    printf("1. CBU\n");
+    printf("2. Alias\n");
+    printf("Opcion: ");
+    scanf("%d", &metodo);
+    getchar();
 
-    /* No se puede transferir a la misma cuenta */
-    if (strcmp(cbu_dest, origen->cbu) == 0) {
+    if (metodo != 1 && metodo != 2) {
+        printf("Opcion invalida.\n");
+        return;
+    }
+
+    /* --- Pedir CBU o alias según elección --- */
+    char busqueda[50];
+    if (metodo == 1) {
+        printf("Ingrese el CBU destino: ");
+        fgets(busqueda, 23, stdin);
+    } else {
+        printf("Ingrese el alias destino: ");
+        fgets(busqueda, 50, stdin);
+    }
+    busqueda[strcspn(busqueda, "\n")] = '\0';
+
+    /* --- No se puede transferir a la misma cuenta --- */
+    if (metodo == 1 && strcmp(busqueda, origen->cbu)   == 0) {
+        printf("No podes transferir a tu propia cuenta.\n");
+        return;
+    }
+    if (metodo == 2 && strcmp(busqueda, origen->alias) == 0) {
         printf("No podes transferir a tu propia cuenta.\n");
         return;
     }
 
-    /* Buscar cuenta destino en el archivo */
+    /* --- Buscar cuenta destino en el archivo --- */
     FILE *f = fopen("./datos/cuentas.dat", "rb");
     if (f == NULL) { printf("Error al abrir archivo de cuentas.\n"); return; }
 
     Cuenta destino;
     int encontrada = 0;
     while (fread(&destino, sizeof(Cuenta), 1, f)) {
-        if (strcmp(destino.cbu, cbu_dest) == 0 && destino.activa) {
-            encontrada = 1;
-            break;
-        }
+        if (!destino.activa) continue;
+        if (metodo == 1 && strcmp(destino.cbu,   busqueda) == 0) { encontrada = 1; break; }
+        if (metodo == 2 && strcmp(destino.alias, busqueda) == 0) { encontrada = 1; break; }
     }
     fclose(f);
 
@@ -140,6 +163,7 @@ void transferir(Cuenta *origen, const char *cuit_titular) {
         return;
     }
 
+    /* --- Monto --- */
     double monto;
     printf("Ingrese el monto a transferir: ");
     scanf("%lf", &monto);
@@ -154,13 +178,13 @@ void transferir(Cuenta *origen, const char *cuit_titular) {
         return;
     }
 
-    /* Actualizar saldos */
-    origen->saldo  -= monto;
-    destino.saldo  += monto;
+    /* --- Actualizar saldos --- */
+    origen->saldo -= monto;
+    destino.saldo += monto;
     guardarCambiosCuenta(origen);
     guardarCambiosCuenta(&destino);
 
-    /* Registrar movimiento */
+    /* --- Registrar movimiento --- */
     Movimiento m;
     m.id     = proximoIdMovimiento();
     m.tipo   = TRANSFERENCIA;
@@ -173,6 +197,6 @@ void transferir(Cuenta *origen, const char *cuit_titular) {
     guardarMovimiento(&m);
 
     printf("Transferencia exitosa.\n");
-    printf("  Monto:         %.2f\n", monto);
-    printf("  Saldo actual:  %.2f\n", origen->saldo);
+    printf("  Monto:        %.2f\n", monto);
+    printf("  Saldo actual: %.2f\n", origen->saldo);
 }
