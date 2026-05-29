@@ -25,8 +25,6 @@ typedef struct {
 // ---- ARCHIVO ----
 
 void guardarMovimiento(Movimiento *m);
-void listarMovimientosCuenta(const char *cbu);
-void listarMovimientosCliente(const char *cuit);
 
 // ---- OPERACIONES ----
 
