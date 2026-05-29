@@ -5,6 +5,8 @@
 #include "cuenta.h"
 #include "validaciones.h"
 #include "login.h"
+#include "operaciones.h"
+#include "historial.h"
 
 // ---- MENU INICIAL ----
 

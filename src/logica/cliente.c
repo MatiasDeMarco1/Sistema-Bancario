@@ -61,7 +61,10 @@ void crearCliente(Cliente *c) {
         c->cuit[strcspn(c->cuit, "\n")] = '\0';
         if (!validar_Cuil(c->cuit))
             printf("Error: CUIT invalido.\n");
-    } while (!validar_Cuil(c->cuit));
+        if (!validar_cuil_unico(c-> cuit))
+            printf("Ya existe una cuenta con este CUIT. \n");
+        
+    } while (!validar_Cuil(c->cuit) || !validar_cuil_unico(c->cuit));
 
     // Mail con validacion
     do {
@@ -115,27 +118,21 @@ void eliminarCliente(char *cuit) {
 void editarCliente(Cliente *c) {
     int opcion;
     printf("Seleccione el campo a editar:\n");
-    printf("1. Nombre\n");
-    printf("2. Apellido\n");
-    printf("3. CUIT\n");
-    printf("4. Mail\n");
-    printf("5. Telefono\n");
-    printf("6. Localidad\n");
-    printf("7. Pais\n");
-    printf("8. Contrasena\n");
+    printf("1. Mail\n");
+    printf("2. Telefono\n");
+    printf("3. Localidad\n");
+    printf("4. Pais\n");
+    printf("5. Contrasena\n");
     printf("Opcion: ");
     scanf("%d", &opcion);
     getchar();
 
     switch (opcion) {
-        case 1: editarNombre(c);     break;
-        case 2: editarApellido(c);   break;
-        case 3: editarCUIT(c);       break;
-        case 4: editarMail(c);       break;
-        case 5: editarTelefono(c);   break;
-        case 6: editarLocalidad(c);  break;
-        case 7: editarPais(c);       break;
-        case 8: editarContrasena(c); break;
+        case 1: editarMail(c);       break;
+        case 2: editarTelefono(c);   break;
+        case 3: editarLocalidad(c);  break;
+        case 4: editarPais(c);       break;
+        case 5: editarContrasena(c); break;
         default: printf("Opcion invalida.\n"); return;
     }
 
@@ -144,27 +141,7 @@ void editarCliente(Cliente *c) {
 
 // ---- EDITAR CAMPOS ----
 
-void editarNombre(Cliente *c) {
-    printf("Ingrese el nuevo nombre: ");
-    fgets(c->nombre, sizeof(c->nombre), stdin);
-    c->nombre[strcspn(c->nombre, "\n")] = '\0';
-}
 
-void editarApellido(Cliente *c) {
-    printf("Ingrese el nuevo apellido: ");
-    fgets(c->apellido, sizeof(c->apellido), stdin);
-    c->apellido[strcspn(c->apellido, "\n")] = '\0';
-}
-
-void editarCUIT(Cliente *c) {
-    do {
-        printf("Ingrese el nuevo CUIT (XX-XXXXXXXX-X): ");
-        fgets(c->cuit, sizeof(c->cuit), stdin);
-        c->cuit[strcspn(c->cuit, "\n")] = '\0';
-        if (!validar_Cuil(c->cuit))
-            printf("Error: CUIT invalido.\n");
-    } while (!validar_Cuil(c->cuit));
-}
 
 void editarMail(Cliente *c) {
     do {

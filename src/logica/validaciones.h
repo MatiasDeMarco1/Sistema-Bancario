@@ -7,5 +7,6 @@ void validarContrasena(char *buffer, int tamBuffer);
 int validar_Cuil(const char *cuil);
 int validar_Mail(const char *mail);
 int validar_Telefono(const char *tel);
+int validar_cuil_unico(const char *cuil);
 
 #endif
