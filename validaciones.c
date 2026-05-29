@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "validaciones.h"
+#include "cliente.h"
 #include <ctype.h>
 
 
@@ -163,3 +164,23 @@ int validar_Telefono(const char *tel) {
     return 1;
 }
 
+/*
+ * Retorna 1 si el CUIL NO existe en el archivo (es único), 0 si ya está registrado.
+ * En caso de error al abrir el archivo, retorna -1.
+ */
+int validar_cuil_unico(const char *cuit) {
+    FILE *f = fopen("./datos/clientes.dat", "rb");
+
+    if (f == NULL) return -1; /* no se pudo abrir el archivo */
+
+    Cliente c;
+    while (fread(&c, sizeof(Cliente), 1, f) == 1) {
+        if (strcmp(c.cuit, cuit) == 0) {
+            fclose(f);
+            return 0; /* CUIL ya registrado */
+        }
+    }
+
+    fclose(f);
+    return 1; /* CUIL único, no encontrado */
+}

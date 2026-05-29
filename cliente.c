@@ -61,7 +61,10 @@ void crearCliente(Cliente *c) {
         c->cuit[strcspn(c->cuit, "\n")] = '\0';
         if (!validar_Cuil(c->cuit))
             printf("Error: CUIT invalido.\n");
-    } while (!validar_Cuil(c->cuit));
+        if (!validar_cuil_unico(c-> cuit))
+            printf("Ya existe una cuenta con este CUIT. \n");
+        
+    } while (!validar_Cuil(c->cuit) || !validar_cuil_unico(c->cuit));
 
     // Mail con validacion
     do {
@@ -125,13 +128,11 @@ void editarCliente(Cliente *c) {
     getchar();
 
     switch (opcion) {
-        case 1: editarNombre(c);     break;
-        case 2: editarApellido(c);   break;
-        case 3: editarMail(c);       break;
-        case 4: editarTelefono(c);   break;
-        case 5: editarLocalidad(c);  break;
-        case 6: editarPais(c);       break;
-        case 7: editarContrasena(c); break;
+        case 1: editarMail(c);       break;
+        case 2: editarTelefono(c);   break;
+        case 3: editarLocalidad(c);  break;
+        case 4: editarPais(c);       break;
+        case 5: editarContrasena(c); break;
         default: printf("Opcion invalida.\n"); return;
     }
 
@@ -139,6 +140,7 @@ void editarCliente(Cliente *c) {
 }
 
 // ---- EDITAR CAMPOS ----
+
 
 
 void editarMail(Cliente *c) {
