@@ -230,7 +230,7 @@ void mostrarTodos() {
     }
     if (!encontrado) printf("No hay clientes activos.\n");
     fclose(f);
-}
+} */
 
 
 ResultadoRegistro crearCliente_op(Cliente *c) {
@@ -258,4 +258,4 @@ ResultadoRegistro crearCliente_op(Cliente *c) {
 
     guardarCliente(c);
     return REG_OK;
-} */
+} 
