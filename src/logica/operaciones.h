@@ -1,6 +1,6 @@
 #ifndef OPERACIONES_H
 #define OPERACIONES_H
-
+#include <time.h> 
 #include "cuenta.h"
 
 // ---- TIPOS ----
@@ -19,7 +19,8 @@ typedef struct {
     char           cuit_destino[14];  // igual a origen si es ingreso/egreso
     char           cbu_origen[23];
     char           cbu_destino[23];   // igual a origen si es ingreso/egreso
-    double         monto;             // siempre positivo; tipo indica sentido
+    double         monto;   
+    time_t         fecha;         
 } Movimiento;
 
 // ---- ARCHIVO ----

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "operaciones.h"
 #include "cuenta.h"
+#include <time.h>
 
 #define ARCHIVO_MOV "./datos/movimientos.dat"
 
@@ -54,6 +55,7 @@ void ingresarDinero(Cuenta *cuenta) {
     m.tipo   = INGRESO;
     m.moneda = cuenta->moneda;
     m.monto  = monto;
+    m.fecha  = time(NULL); 
     strcpy(m.cuit_origen,  cuenta->cliente_cuit);
     strcpy(m.cuit_destino, cuenta->cliente_cuit);
     strcpy(m.cbu_origen,   cuenta->cbu);
@@ -90,6 +92,7 @@ void retirarDinero(Cuenta *cuenta) {
     m.tipo   = EGRESO;
     m.moneda = cuenta->moneda;
     m.monto  = monto;
+    m.fecha  = time(NULL);
     strcpy(m.cuit_origen,  cuenta->cliente_cuit);
     strcpy(m.cuit_destino, cuenta->cliente_cuit);
     strcpy(m.cbu_origen,   cuenta->cbu);
@@ -190,6 +193,7 @@ void transferir(Cuenta *origen, const char *cuit_titular) {
     m.tipo   = TRANSFERENCIA;
     m.moneda = origen->moneda;
     m.monto  = monto;
+    m.fecha  = time(NULL);
     strcpy(m.cuit_origen,  origen->cliente_cuit);
     strcpy(m.cuit_destino, destino.cliente_cuit);
     strcpy(m.cbu_origen,   origen->cbu);
@@ -213,6 +217,7 @@ ResultadoOp ingresarDinero_op(Cuenta *cuenta, double monto) {
     m.tipo   = INGRESO;
     m.moneda = cuenta->moneda;
     m.monto  = monto;
+    m.fecha  = time(NULL);
     strcpy(m.cuit_origen,  cuenta->cliente_cuit);
     strcpy(m.cuit_destino, cuenta->cliente_cuit);
     strcpy(m.cbu_origen,   cuenta->cbu);
@@ -234,6 +239,7 @@ ResultadoOp retirarDinero_op(Cuenta *cuenta, double monto) {
     m.tipo   = EGRESO;
     m.moneda = cuenta->moneda;
     m.monto  = monto;
+    m.fecha  = time(NULL);
     strcpy(m.cuit_origen,  cuenta->cliente_cuit);
     strcpy(m.cuit_destino, cuenta->cliente_cuit);
     strcpy(m.cbu_origen,   cuenta->cbu);
@@ -280,6 +286,7 @@ ResultadoOp transferir_op(Cuenta *origen, int metodo,
     m.tipo   = TRANSFERENCIA;
     m.moneda = origen->moneda;
     m.monto  = monto;
+    m.fecha  = time(NULL);
     strcpy(m.cuit_origen,  origen->cliente_cuit);
     strcpy(m.cuit_destino, destino.cliente_cuit);
     strcpy(m.cbu_origen,   origen->cbu);
