@@ -11,11 +11,15 @@ void crearCuenta_op(Cuenta *c, char *cuit, Moneda moneda, const char *alias);
 void armarAlias(char *alias, const char *base, Moneda moneda);
 int  aliasUnico(const char *alias);
 
+// De cliente.c
+void eliminarCliente(char *cuit);
+
 // Sub-modos del menu
 typedef enum {
     MODO_MENU,          // botones normales
     MODO_CREAR_PESOS,   // formulario alias para cuenta en pesos
-    MODO_CREAR_DOLARES  // formulario alias para cuenta en dolares
+    MODO_CREAR_DOLARES, // formulario alias para cuenta en dolares
+    MODO_CONFIRMAR_BAJA // dialogo de confirmacion de baja
 } ModoMenu;
 
 Navegacion pantalla_menu(Ventana *v, Cliente *cliente) {
@@ -54,6 +58,12 @@ Navegacion pantalla_menu(Ventana *v, Cliente *cliente) {
     Boton btn_confirmar = boton_crear(btn_x, y0 + 120, btn_w, 44,
         "Crear", COLOR_EXITO, COLOR_EXITO);
     Boton btn_cancelar = boton_crear(btn_x, y0 + 175, btn_w, 40,
+        "Cancelar", COLOR_PANEL, COLOR_BORDE);
+
+    // Botones del dialogo de confirmacion de baja
+    Boton btn_baja_si = boton_crear(btn_x, y0 + 110, btn_w, 46,
+        "Si, dar de baja", COLOR_PELIGRO, COLOR_PELIGRO);
+    Boton btn_baja_no = boton_crear(btn_x, y0 + 166, btn_w, 44,
         "Cancelar", COLOR_PANEL, COLOR_BORDE);
 
     ModoMenu modo = MODO_MENU;
@@ -95,10 +105,23 @@ Navegacion pantalla_menu(Ventana *v, Cliente *cliente) {
                     mensaje[0] = '\0';
                 }
 
-                if (boton_fue_clickeado(&btn_baja, &e))
-                    siguiente = NAV_LOGIN;   // baja real: pendiente
+                if (boton_fue_clickeado(&btn_baja, &e)) {
+                    modo = MODO_CONFIRMAR_BAJA;   // mostrar confirmacion
+                    mensaje[0] = '\0';
+                }
                 if (boton_fue_clickeado(&btn_salir, &e))
                     siguiente = NAV_LOGIN;
+            } else if (modo == MODO_CONFIRMAR_BAJA) {
+                // Dialogo de confirmacion de baja
+                int escape = (e.type == SDL_KEYDOWN &&
+                            e.key.keysym.sym == SDLK_ESCAPE);
+                if (escape || boton_fue_clickeado(&btn_baja_no, &e)) {
+                    modo = MODO_MENU;
+                }
+                if (boton_fue_clickeado(&btn_baja_si, &e)) {
+                    eliminarCliente(cliente->cuit);   // baja logica real
+                    siguiente = NAV_LOGIN;            // vuelve al login
+                }
             } else {
                 // Modo formulario: capturar alias
                 input_manejar_evento(&in_alias, &e);
@@ -149,6 +172,9 @@ Navegacion pantalla_menu(Ventana *v, Cliente *cliente) {
             if (!tieneDolares) boton_actualizar_hover(&btn_crear_dolares, mx, my);
             boton_actualizar_hover(&btn_baja, mx, my);
             boton_actualizar_hover(&btn_salir, mx, my);
+        } else if (modo == MODO_CONFIRMAR_BAJA) {
+            boton_actualizar_hover(&btn_baja_si, mx, my);
+            boton_actualizar_hover(&btn_baja_no, mx, my);
         } else {
             boton_actualizar_hover(&btn_confirmar, mx, my);
             boton_actualizar_hover(&btn_cancelar, mx, my);
@@ -192,6 +218,15 @@ Navegacion pantalla_menu(Ventana *v, Cliente *cliente) {
 
             boton_dibujar(v, &btn_baja);
             boton_dibujar(v, &btn_salir);
+        } else if (modo == MODO_CONFIRMAR_BAJA) {
+            texto_dibujar(v, v->font_normal,
+                        "Estas seguro que queres darte de baja?",
+                        btn_x, y0, COLOR_TEXTO);
+            texto_dibujar(v, v->font_chico,
+                        "Esta accion desactiva tu cuenta de cliente.",
+                        btn_x, y0 + 40, COLOR_TEXTO_SUAVE);
+            boton_dibujar(v, &btn_baja_si);
+            boton_dibujar(v, &btn_baja_no);
         } else {
             const char *etiqueta = (modo == MODO_CREAR_PESOS)
                 ? "Nueva cuenta en Pesos - elegi un alias:"
@@ -204,7 +239,7 @@ Navegacion pantalla_menu(Ventana *v, Cliente *cliente) {
                 : "Se agregara .usd al final";
             input_dibujar(v, &in_alias);
             texto_dibujar(v, v->font_chico, sufijo,
-                        btn_x, y0 + 88, COLOR_TEXTO_SUAVE);
+                    btn_x, y0 + 88, COLOR_TEXTO_SUAVE);
 
             boton_dibujar(v, &btn_confirmar);
             boton_dibujar(v, &btn_cancelar);
