@@ -218,3 +218,28 @@ int validar_telefono_unico(const char *tel) {
     fclose(f);
     return 1;
 }
+
+// Hash educativo de contrasena (FNV-1a + salt).
+// NO es criptograficamente seguro: es solo para no guardar texto plano.
+// 'salida' debe tener al menos 17 bytes (16 hex + '\0').
+void hashearContrasena(const char *pass, char *salida) {
+    // Salt fijo: agrega una constante antes de hashear.
+    // (Un sistema real usaria un salt aleatorio distinto por usuario.)
+    const char *salt = "BancoUCEL2024_";
+
+    unsigned long long hash = 14695981039346656037ULL; // offset FNV-1a 64-bit
+    const unsigned long long prime = 1099511628211ULL;
+
+    // Hashear primero el salt, luego la contrasena
+    for (const char *p = salt; *p; p++) {
+        hash ^= (unsigned char)(*p);
+        hash *= prime;
+    }
+    for (const char *p = pass; *p; p++) {
+        hash ^= (unsigned char)(*p);
+        hash *= prime;
+    }
+
+    // Convertir a string hexadecimal de 16 caracteres
+    snprintf(salida, 17, "%016llx", hash);
+}

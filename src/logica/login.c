@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "cliente.h"
 #include "login.h"
+#include "validaciones.h"
 
 #define ARCHIVO "./datos/clientes.dat"
 
@@ -22,6 +23,10 @@ int login(Cliente *c) {
 }
 
 int login_validar(const char *identificador, const char *contrasena, Cliente *c) {
+    // Hashear lo que ingreso el usuario para comparar contra lo guardado
+    char hash_ingresado[17];
+    hashearContrasena(contrasena, hash_ingresado);
+
     FILE *f = fopen(ARCHIVO, "rb");
     if (f == NULL) return 0;
 
@@ -29,7 +34,7 @@ int login_validar(const char *identificador, const char *contrasena, Cliente *c)
         if ((strcmp(c->cuit,     identificador) == 0 ||
             strcmp(c->mail,     identificador) == 0 ||
             strcmp(c->telefono, identificador) == 0) &&
-            strcmp(c->contrasena, contrasena)  == 0) {
+             strcmp(c->contrasena, hash_ingresado) == 0) {   // hash vs hash
             fclose(f);
             return 1;
         }

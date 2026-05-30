@@ -239,12 +239,17 @@ ResultadoRegistro crearCliente_op(Cliente *c) {
         return REG_CAMPO_VACIO;
 
     if (!validar_Cuil(c->cuit))              return REG_CUIT_INVALIDO;
-    if (validar_cuil_unico(c->cuit) != 1)    return REG_CUIT_DUPLICADO;
+    if (validar_cuil_unico(c->cuit) == 0)    return REG_CUIT_DUPLICADO;
     if (!validar_Mail(c->mail))              return REG_MAIL_INVALIDO;
-    if (validar_mail_unico(c->mail) != 1)    return REG_MAIL_DUPLICADO;
+    if (validar_mail_unico(c->mail) == 0)         return REG_MAIL_DUPLICADO;
     if (!validar_Telefono(c->telefono))      return REG_TELEFONO_INVALIDO;
-    if (validar_telefono_unico(c->telefono) != 1) return REG_TELEFONO_DUPLICADO;
+    if (validar_telefono_unico(c->telefono) == 0) return REG_TELEFONO_DUPLICADO;
     if (!validar_contrasena_str(c->contrasena))   return REG_PASS_CORTA;
+
+    // Hashear la contrasena ANTES de guardar (reemplaza el texto plano)
+    char hash[17];
+    hashearContrasena(c->contrasena, hash);
+    strcpy(c->contrasena, hash);
 
     FILE *f = fopen(ARCHIVO, "rb");
     if (f == NULL) {
