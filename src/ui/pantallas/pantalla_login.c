@@ -4,8 +4,9 @@
 
 // De login.c
 int login_validar(const char *identificador, const char *contrasena, Cliente *c);
+int login_admin_validar(const char *usuario, const char *contrasena, Admin *a);
 
-Navegacion pantalla_login(Ventana *v, Cliente *c) {
+Navegacion pantalla_login(Ventana *v, Cliente *c, Admin *a) {
     int panel_w = 380;
     int panel_h = 400;
     int panel_x = (VENTANA_ANCHO - panel_w) / 2;
@@ -16,14 +17,14 @@ Navegacion pantalla_login(Ventana *v, Cliente *c) {
     int campo_x = panel_x + (panel_w - campo_w) / 2;
 
     Input in_id = input_crear(campo_x, panel_y + 110, campo_w, 42,
-                            "CUIT, mail o telefono", 0);
+                              "Usuario / CUIT / mail / telefono", 0);
     Input in_pass = input_crear(campo_x, panel_y + 175, campo_w, 42,
                                 "Contrasena", 1);
 
     Boton btn_ingresar = boton_crear(campo_x, panel_y + 245, campo_w, 46,
-                                    "INGRESAR", COLOR_PRIMARIO, COLOR_PRIMARIO_HOVER);
+                                     "INGRESAR", COLOR_PRIMARIO, COLOR_PRIMARIO_HOVER);
     Boton btn_registrar = boton_crear(campo_x, panel_y + 305, campo_w, 42,
-                                    "Crear cuenta nueva", COLOR_PANEL, COLOR_BORDE);
+                                      "Crear cuenta nueva", COLOR_PANEL, COLOR_BORDE);
 
     char mensaje[80] = "";
 
@@ -44,12 +45,17 @@ Navegacion pantalla_login(Ventana *v, Cliente *c) {
             input_manejar_evento(&in_pass, &e);
 
             int enter = (e.type == SDL_KEYDOWN &&
-                        e.key.keysym.sym == SDLK_RETURN);
+                         e.key.keysym.sym == SDLK_RETURN);
 
             if (boton_fue_clickeado(&btn_ingresar, &e) || enter) {
                 if (in_id.largo == 0 || in_pass.largo == 0) {
                     strcpy(mensaje, "Complete todos los campos");
-                } else if (login_validar(in_id.texto, in_pass.texto, c)) {
+                }
+                // Probar primero admin, despues cliente
+                else if (login_admin_validar(in_id.texto, in_pass.texto, a)) {
+                    siguiente = NAV_MENU_ADMIN;
+                }
+                else if (login_validar(in_id.texto, in_pass.texto, c)) {
                     if (!c->activo) {
                         strcpy(mensaje, "Tu cuenta esta dada de baja");
                         input_limpiar(&in_pass);
@@ -73,11 +79,11 @@ Navegacion pantalla_login(Ventana *v, Cliente *c) {
         panel_dibujar(v, panel, COLOR_PANEL, COLOR_BORDE);
 
         SDL_Rect area_titulo = { panel_x, panel_y + 30, panel_w, 40 };
-        texto_centrado(v, v->font_grande, "Banco DMC",
-                    area_titulo, COLOR_TEXTO);
+        texto_centrado(v, v->font_grande, "Sistema Bancario",
+                       area_titulo, COLOR_TEXTO);
         SDL_Rect area_sub = { panel_x, panel_y + 70, panel_w, 24 };
         texto_centrado(v, v->font_chico, "Inicie sesion para continuar",
-                    area_sub, COLOR_TEXTO_SUAVE);
+                       area_sub, COLOR_TEXTO_SUAVE);
 
         input_dibujar(v, &in_id);
         input_dibujar(v, &in_pass);

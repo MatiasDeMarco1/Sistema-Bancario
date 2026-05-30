@@ -4,6 +4,7 @@
 #include "cliente.h"
 #include "login.h"
 #include "validaciones.h"
+#include "admin.h"
 
 #define ARCHIVO "./datos/clientes.dat"
 
@@ -41,4 +42,11 @@ int login_validar(const char *identificador, const char *contrasena, Cliente *c)
     }
     fclose(f);
     return 0;
+}
+
+int login_admin_validar(const char *usuario, const char *contrasena, Admin *a) {
+    if (!buscarAdmin(usuario, a)) return 0;
+    char hash[17];
+    hashearContrasena(contrasena, hash);
+    return strcmp(a->contrasena, hash) == 0;
 }

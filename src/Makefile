@@ -1,9 +1,6 @@
 # ============================================================
 # Makefile - Sistema Bancario (consola + grafico)
-#   make            -> compila ambos
-#   make run        -> corre el grafico
-#   make run-consola-> corre la consola
-#   make clean      -> borra ejecutables
+#   make / make run / make run-consola / make clean
 # ============================================================
 
 CC = gcc
@@ -11,12 +8,10 @@ INCLUDES = -Ilogica -Iui -Iui/pantallas
 CFLAGS = -Wall $(INCLUDES) $(shell sdl2-config --cflags)
 LIBS = $(shell sdl2-config --libs) -lSDL2_ttf
 
-# Logica compartida por ambas versiones
 SRC_LOGICA = logica/cliente.c logica/login.c logica/validaciones.c \
              logica/cuenta.c logica/operaciones.c logica/historial.c \
-             logica/menu.c
+             logica/menu.c logica/admin.c
 
-# UI (solo la version grafica)
 SRC_UI = ui/ventana.c ui/componentes.c ui/app.c \
          ui/pantallas/pantalla_login.c \
          ui/pantallas/pantalla_registro.c \
@@ -25,15 +20,18 @@ SRC_UI = ui/ventana.c ui/componentes.c ui/app.c \
          ui/pantallas/pantalla_seleccion_cuenta.c \
          ui/pantallas/pantalla_cuenta.c \
          ui/pantallas/pantalla_transferir.c \
-         ui/pantallas/pantalla_historial.c
+         ui/pantallas/pantalla_historial.c \
+         ui/pantallas/pantalla_menu_admin.c \
+         ui/pantallas/pantalla_admin_clientes.c \
+         ui/pantallas/pantalla_admin_detalle.c \
+         ui/pantallas/pantalla_admin_cuentas.c \
+         ui/pantallas/pantalla_admin_movimientos.c
 
 all: banco banco_consola
 
-# Version grafica (logica + UI + SDL)
 banco: main_grafico.c $(SRC_LOGICA) $(SRC_UI)
 	$(CC) $(CFLAGS) main_grafico.c $(SRC_LOGICA) $(SRC_UI) -o banco $(LIBS)
 
-# Version consola (solo logica, sin SDL)
 banco_consola: main_consola.c $(SRC_LOGICA)
 	$(CC) -Wall -Ilogica main_consola.c $(SRC_LOGICA) -o banco_consola
 

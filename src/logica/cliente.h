@@ -63,4 +63,7 @@ ResultadoEdicion editarTelefono_op(Cliente *c, const char *nuevo);
 ResultadoEdicion editarLocalidad_op(Cliente *c, const char *nueva);
 ResultadoEdicion editarPais_op(Cliente *c, const char *nuevo);
 ResultadoEdicion editarContrasena_op(Cliente *c, const char *nueva);
+
+void reactivarCliente(char *cuit);
+int obtenerTodosLosClientes(Cliente arr[], int max);
 #endif

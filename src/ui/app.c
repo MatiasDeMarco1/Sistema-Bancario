@@ -8,23 +8,31 @@
 #include "pantalla_cuenta.h"
 #include "pantalla_transferir.h"
 #include "pantalla_historial.h"
+#include "pantalla_menu_admin.h"
+#include "pantalla_admin_clientes.h"
+#include "pantalla_admin_detalle.h"
+#include "pantalla_admin_cuentas.h"
+#include "pantalla_admin_movimientos.h"
 #include "cliente.h"
 #include "cuenta.h"
+#include "admin.h"
 #include <stdio.h>
 
 void iniciarApp(void) {
     Ventana v;
     if (!ventana_init(&v)) return;
 
-    Cliente cliente;
-    Cuenta  cuenta;
+    Cliente cliente;        // cliente logueado (sesion normal)
+    Cuenta  cuenta;         // cuenta seleccionada por el cliente
+    Admin   admin;          // admin logueado
+    Cliente cliente_admin;  // cliente que el admin esta inspeccionando
 
     Navegacion actual = NAV_LOGIN;
 
     while (actual != NAV_SALIR && v.corriendo) {
         switch (actual) {
             case NAV_LOGIN:
-                actual = pantalla_login(&v, &cliente);
+                actual = pantalla_login(&v, &cliente, &admin);
                 break;
             case NAV_REGISTRO:
                 actual = pantalla_registro(&v);
@@ -46,6 +54,21 @@ void iniciarApp(void) {
                 break;
             case NAV_HISTORIAL:
                 actual = pantalla_historial(&v, &cliente);
+                break;
+            case NAV_MENU_ADMIN:
+                actual = pantalla_menu_admin(&v, &admin);
+                break;
+            case NAV_ADMIN_CLIENTES:
+                actual = pantalla_admin_clientes(&v, &cliente_admin);
+                break;
+            case NAV_ADMIN_DETALLE:
+                actual = pantalla_admin_detalle(&v, &cliente_admin);
+                break;
+            case NAV_ADMIN_CUENTAS:
+                actual = pantalla_admin_cuentas(&v, &cliente_admin);
+                break;
+            case NAV_ADMIN_MOVIMIENTOS:
+                actual = pantalla_admin_movimientos(&v, &cliente_admin);
                 break;
             default:
                 actual = NAV_SALIR;

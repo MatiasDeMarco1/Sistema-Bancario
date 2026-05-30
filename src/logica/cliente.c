@@ -309,3 +309,29 @@ ResultadoEdicion editarContrasena_op(Cliente *c, const char *nueva) {
     guardarCambios(c);
     return EDIT_OK;
 }
+
+void reactivarCliente(char *cuit) {
+    FILE *f = fopen(ARCHIVO, "rb");
+    if (f == NULL) { printf("Error al abrir archivo.\n"); return; }
+    Cliente c;
+    while (fread(&c, sizeof(Cliente), 1, f)) {
+        if (strcmp(c.cuit, cuit) == 0) {
+            fclose(f);
+            c.activo = 1;
+            guardarCambios(&c);
+            return;
+        }
+    }
+    fclose(f);
+}
+
+int obtenerTodosLosClientes(Cliente arr[], int max) {
+    FILE *f = fopen(ARCHIVO, "rb");
+    if (f == NULL) return 0;
+    int n = 0;
+    while (n < max && fread(&arr[n], sizeof(Cliente), 1, f) == 1) {
+        n++;
+    }
+    fclose(f);
+    return n;
+}
