@@ -1,6 +1,9 @@
 # ============================================================
-# Makefile - Sistema Bancario con SDL2
-#   make / make run / make clean
+# Makefile - Sistema Bancario (consola + grafico)
+#   make            -> compila ambos
+#   make run        -> corre el grafico
+#   make run-consola-> corre la consola
+#   make clean      -> borra ejecutables
 # ============================================================
 
 CC = gcc
@@ -10,20 +13,20 @@ LIBS = $(shell sdl2-config --libs) -lSDL2_ttf
 
 # Logica compartida por ambas versiones
 SRC_LOGICA = logica/cliente.c logica/login.c logica/validaciones.c \
-            logica/cuenta.c logica/operaciones.c logica/historial.c \
-            logica/menu.c
+             logica/cuenta.c logica/operaciones.c logica/historial.c \
+             logica/menu.c
 
 # UI (solo la version grafica)
 SRC_UI = ui/ventana.c ui/componentes.c ui/app.c \
-        ui/pantallas/pantalla_login.c \
-        ui/pantallas/pantalla_registro.c \
-        ui/pantallas/pantalla_menu.c \
-        ui/pantallas/pantalla_seleccion_cuenta.c \
-        ui/pantallas/pantalla_cuenta.c \
-        ui/pantallas/pantalla_transferir.c \
-        ui/pantallas/pantalla_historial.c
+         ui/pantallas/pantalla_login.c \
+         ui/pantallas/pantalla_registro.c \
+         ui/pantallas/pantalla_menu.c \
+         ui/pantallas/pantalla_perfil.c \
+         ui/pantallas/pantalla_seleccion_cuenta.c \
+         ui/pantallas/pantalla_cuenta.c \
+         ui/pantallas/pantalla_transferir.c \
+         ui/pantallas/pantalla_historial.c
 
-# --- Objetivos ---
 all: banco banco_consola
 
 # Version grafica (logica + UI + SDL)

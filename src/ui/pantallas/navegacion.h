@@ -8,6 +8,7 @@ typedef enum {
     NAV_LOGIN,            // pantalla de inicio de sesion
     NAV_REGISTRO,         // pantalla de registro de cliente
     NAV_MENU,             // menu post-login (mis cuentas)
+    NAV_PERFIL,           // pantalla "mi perfil" (editar datos)
     NAV_SELECCION_CUENTA, // elegir entre cuenta pesos / dolares
     NAV_CUENTA,           // operar sobre una cuenta seleccionada
     NAV_TRANSFERIR,       // subpantalla de transferencia

@@ -264,3 +264,48 @@ ResultadoRegistro crearCliente_op(Cliente *c) {
     guardarCliente(c);
     return REG_OK;
 }
+
+
+ResultadoEdicion editarMail_op(Cliente *c, const char *nuevo) {
+    if (nuevo[0] == '\0')              return EDIT_VACIO;
+    if (!validar_Mail(nuevo))          return EDIT_MAIL_INVALIDO;
+    // unico, pero permitiendo que sea el mismo que ya tiene
+    if (strcmp(nuevo, c->mail) != 0 && validar_mail_unico(nuevo) == 0)
+        return EDIT_MAIL_DUPLICADO;
+    strcpy(c->mail, nuevo);
+    guardarCambios(c);
+    return EDIT_OK;
+}
+
+ResultadoEdicion editarTelefono_op(Cliente *c, const char *nuevo) {
+    if (nuevo[0] == '\0')              return EDIT_VACIO;
+    if (!validar_Telefono(nuevo))      return EDIT_TELEFONO_INVALIDO;
+    if (strcmp(nuevo, c->telefono) != 0 && validar_telefono_unico(nuevo) == 0)
+        return EDIT_TELEFONO_DUPLICADO;
+    strcpy(c->telefono, nuevo);
+    guardarCambios(c);
+    return EDIT_OK;
+}
+
+ResultadoEdicion editarLocalidad_op(Cliente *c, const char *nueva) {
+    if (nueva[0] == '\0') return EDIT_VACIO;
+    strcpy(c->localidad, nueva);
+    guardarCambios(c);
+    return EDIT_OK;
+}
+
+ResultadoEdicion editarPais_op(Cliente *c, const char *nuevo) {
+    if (nuevo[0] == '\0') return EDIT_VACIO;
+    strcpy(c->pais, nuevo);
+    guardarCambios(c);
+    return EDIT_OK;
+}
+
+ResultadoEdicion editarContrasena_op(Cliente *c, const char *nueva) {
+    if (!validar_contrasena_str(nueva)) return EDIT_PASS_CORTA;
+    char hash[17];
+    hashearContrasena(nueva, hash);     // hashear igual que en el registro
+    strcpy(c->contrasena, hash);
+    guardarCambios(c);
+    return EDIT_OK;
+}

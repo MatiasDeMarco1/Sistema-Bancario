@@ -51,4 +51,16 @@ typedef enum {
 } ResultadoRegistro;
 
 ResultadoRegistro crearCliente_op(Cliente *c);
+
+typedef enum {
+    EDIT_OK, EDIT_MAIL_INVALIDO, EDIT_MAIL_DUPLICADO,
+    EDIT_TELEFONO_INVALIDO, EDIT_TELEFONO_DUPLICADO,
+    EDIT_PASS_CORTA, EDIT_VACIO
+} ResultadoEdicion;
+
+ResultadoEdicion editarMail_op(Cliente *c, const char *nuevo);
+ResultadoEdicion editarTelefono_op(Cliente *c, const char *nuevo);
+ResultadoEdicion editarLocalidad_op(Cliente *c, const char *nueva);
+ResultadoEdicion editarPais_op(Cliente *c, const char *nuevo);
+ResultadoEdicion editarContrasena_op(Cliente *c, const char *nueva);
 #endif

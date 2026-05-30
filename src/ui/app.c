@@ -3,6 +3,7 @@
 #include "pantalla_login.h"
 #include "pantalla_registro.h"
 #include "pantalla_menu.h"
+#include "pantalla_perfil.h"
 #include "pantalla_seleccion_cuenta.h"
 #include "pantalla_cuenta.h"
 #include "pantalla_transferir.h"
@@ -30,6 +31,9 @@ void iniciarApp(void) {
                 break;
             case NAV_MENU:
                 actual = pantalla_menu(&v, &cliente);
+                break;
+            case NAV_PERFIL:
+                actual = pantalla_perfil(&v, &cliente);
                 break;
             case NAV_SELECCION_CUENTA:
                 actual = pantalla_seleccion_cuenta(&v, &cliente, &cuenta);
