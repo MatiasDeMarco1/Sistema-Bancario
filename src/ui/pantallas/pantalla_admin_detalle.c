@@ -19,16 +19,18 @@ Navegacion pantalla_admin_detalle(Ventana *v, Cliente *cliente) {
 
     int btn_h = 46;
     int gap = 14;
-    int y0 = panel_y + 230;
+    int y0 = panel_y + 220;
 
     Boton btn_cuentas = boton_crear(x0, y0, ancho, btn_h,
         "Ver cuentas", COLOR_PRIMARIO, COLOR_PRIMARIO_HOVER);
     Boton btn_movimientos = boton_crear(x0, y0 + (btn_h + gap), ancho, btn_h,
         "Ver movimientos", COLOR_PRIMARIO, COLOR_PRIMARIO_HOVER);
+    Boton btn_editar = boton_crear(x0, y0 + 2 * (btn_h + gap), ancho, btn_h,
+        "Editar datos", COLOR_PRIMARIO, COLOR_PRIMARIO_HOVER);
     // El boton de baja/reactivar cambia segun el estado
-    Boton btn_estado = boton_crear(x0, y0 + 2 * (btn_h + gap), ancho, btn_h,
+    Boton btn_estado = boton_crear(x0, y0 + 3 * (btn_h + gap), ancho, btn_h,
         "", COLOR_PELIGRO, COLOR_PELIGRO);
-    Boton btn_volver = boton_crear(x0, y0 + 3 * (btn_h + gap), ancho, 44,
+    Boton btn_volver = boton_crear(x0, y0 + 4 * (btn_h + gap), ancho, 44,
         "Volver a la lista", COLOR_PANEL, COLOR_BORDE);
 
     SDL_Event e;
@@ -59,6 +61,8 @@ Navegacion pantalla_admin_detalle(Ventana *v, Cliente *cliente) {
                 siguiente = NAV_ADMIN_CUENTAS;
             if (boton_fue_clickeado(&btn_movimientos, &e))
                 siguiente = NAV_ADMIN_MOVIMIENTOS;
+            if (boton_fue_clickeado(&btn_editar, &e))
+                siguiente = NAV_ADMIN_EDITAR;
 
             if (boton_fue_clickeado(&btn_estado, &e)) {
                 if (cliente->activo) {
@@ -76,6 +80,7 @@ Navegacion pantalla_admin_detalle(Ventana *v, Cliente *cliente) {
 
         boton_actualizar_hover(&btn_cuentas, mx, my);
         boton_actualizar_hover(&btn_movimientos, mx, my);
+        boton_actualizar_hover(&btn_editar, mx, my);
         boton_actualizar_hover(&btn_estado, mx, my);
         boton_actualizar_hover(&btn_volver, mx, my);
 
@@ -103,6 +108,7 @@ Navegacion pantalla_admin_detalle(Ventana *v, Cliente *cliente) {
 
         boton_dibujar(v, &btn_cuentas);
         boton_dibujar(v, &btn_movimientos);
+        boton_dibujar(v, &btn_editar);
         boton_dibujar(v, &btn_estado);
         boton_dibujar(v, &btn_volver);
 

@@ -13,6 +13,7 @@
 #include "pantalla_admin_detalle.h"
 #include "pantalla_admin_cuentas.h"
 #include "pantalla_admin_movimientos.h"
+#include "pantalla_admin_editar.h"
 #include "cliente.h"
 #include "cuenta.h"
 #include "admin.h"
@@ -69,6 +70,9 @@ void iniciarApp(void) {
                 break;
             case NAV_ADMIN_MOVIMIENTOS:
                 actual = pantalla_admin_movimientos(&v, &cliente_admin);
+                break;
+            case NAV_ADMIN_EDITAR:
+                actual = pantalla_admin_editar(&v, &cliente_admin);
                 break;
             default:
                 actual = NAV_SALIR;

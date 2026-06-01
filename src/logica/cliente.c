@@ -335,3 +335,17 @@ int obtenerTodosLosClientes(Cliente arr[], int max) {
     fclose(f);
     return n;
 }
+
+ResultadoEdicion editarNombre_op(Cliente *c, const char *nuevo) {
+    if (nuevo[0] == '\0') return EDIT_VACIO;
+    strcpy(c->nombre, nuevo);
+    guardarCambios(c);
+    return EDIT_OK;
+}
+
+ResultadoEdicion editarApellido_op(Cliente *c, const char *nuevo) {
+    if (nuevo[0] == '\0') return EDIT_VACIO;
+    strcpy(c->apellido, nuevo);
+    guardarCambios(c);
+    return EDIT_OK;
+}

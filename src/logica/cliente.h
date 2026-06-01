@@ -66,4 +66,7 @@ ResultadoEdicion editarContrasena_op(Cliente *c, const char *nueva);
 
 void reactivarCliente(char *cuit);
 int obtenerTodosLosClientes(Cliente arr[], int max);
+
+ResultadoEdicion editarNombre_op(Cliente *c, const char *nuevo);
+ResultadoEdicion editarApellido_op(Cliente *c, const char *nuevo);
 #endif
