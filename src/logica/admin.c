@@ -43,3 +43,25 @@ void seedAdmin(void) {
     guardarAdmin(&a);
     printf("Admin inicial creado (usuario: admin, contrasena: admin1234)\n");
 }
+
+
+
+ResultadoAdmin crearAdmin_op(const char *usuario, const char *contrasena) {
+    if (usuario[0] == '\0')                  return ADM_USUARIO_VACIO;
+
+    Admin tmp;
+    if (buscarAdmin(usuario, &tmp))          return ADM_USUARIO_DUPLICADO;
+
+    if (!validar_contrasena_str(contrasena)) return ADM_PASS_CORTA;
+
+    Admin nuevo;
+    strncpy(nuevo.usuario, usuario, sizeof(nuevo.usuario) - 1);
+    nuevo.usuario[sizeof(nuevo.usuario) - 1] = '\0';
+
+    char hash[17];
+    hashearContrasena(contrasena, hash);
+    strcpy(nuevo.contrasena, hash);
+
+    guardarAdmin(&nuevo);
+    return ADM_OK;
+}

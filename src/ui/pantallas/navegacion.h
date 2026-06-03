@@ -17,7 +17,8 @@ typedef enum {
     NAV_ADMIN_DETALLE,
     NAV_ADMIN_CUENTAS,
     NAV_ADMIN_MOVIMIENTOS,
-    NAV_ADMIN_EDITAR       // editar datos de un cliente (admin)
+    NAV_ADMIN_EDITAR,
+    NAV_ADMIN_CREAR        // crear un nuevo administrador
 } Navegacion;
 
 #endif

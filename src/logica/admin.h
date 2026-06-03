@@ -15,4 +15,12 @@ int buscarAdmin(const char *usuario, Admin *a);
 // Crea el admin inicial si el archivo no existe todavia (seed).
 void seedAdmin(void);
 
+typedef enum {
+    ADM_OK,
+    ADM_USUARIO_VACIO,
+    ADM_USUARIO_DUPLICADO,
+    ADM_PASS_CORTA
+} ResultadoAdmin;
+
+ResultadoAdmin crearAdmin_op(const char *usuario, const char *contrasena);
 #endif

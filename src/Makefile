@@ -26,7 +26,8 @@ SRC_UI = ui/ventana.c ui/componentes.c ui/app.c \
          ui/pantallas/pantalla_admin_detalle.c \
          ui/pantallas/pantalla_admin_cuentas.c \
          ui/pantallas/pantalla_admin_movimientos.c \
-         ui/pantallas/pantalla_admin_editar.c
+         ui/pantallas/pantalla_admin_editar.c \
+         ui/pantallas/pantalla_admin_crear.c
 
 all: banco banco_consola
 

@@ -4,7 +4,7 @@
 
 Navegacion pantalla_menu_admin(Ventana *v, Admin *admin) {
     int panel_w = 460;
-    int panel_h = 360;
+    int panel_h = 410;
     int panel_x = (VENTANA_ANCHO - panel_w) / 2;
     int panel_y = (VENTANA_ALTO  - panel_h) / 2;
     SDL_Rect panel = { panel_x, panel_y, panel_w, panel_h };
@@ -17,7 +17,9 @@ Navegacion pantalla_menu_admin(Ventana *v, Admin *admin) {
 
     Boton btn_clientes = boton_crear(btn_x, y0, btn_w, btn_h,
         "Gestionar clientes", COLOR_PRIMARIO, COLOR_PRIMARIO_HOVER);
-    Boton btn_salir = boton_crear(btn_x, y0 + (btn_h + gap), btn_w, btn_h,
+    Boton btn_crear_admin = boton_crear(btn_x, y0 + (btn_h + gap), btn_w, btn_h,
+        "Crear administrador", COLOR_EXITO, COLOR_EXITO);
+    Boton btn_salir = boton_crear(btn_x, y0 + 2 * (btn_h + gap), btn_w, btn_h,
         "Cerrar sesion", COLOR_PANEL, COLOR_BORDE);
 
     char saludo[120];
@@ -37,11 +39,14 @@ Navegacion pantalla_menu_admin(Ventana *v, Admin *admin) {
             }
             if (boton_fue_clickeado(&btn_clientes, &e))
                 siguiente = NAV_ADMIN_CLIENTES;
+            if (boton_fue_clickeado(&btn_crear_admin, &e))
+                siguiente = NAV_ADMIN_CREAR;
             if (boton_fue_clickeado(&btn_salir, &e))
                 siguiente = NAV_LOGIN;
         }
 
         boton_actualizar_hover(&btn_clientes, mx, my);
+        boton_actualizar_hover(&btn_crear_admin, mx, my);
         boton_actualizar_hover(&btn_salir, mx, my);
 
         ventana_limpiar(v);
@@ -53,6 +58,7 @@ Navegacion pantalla_menu_admin(Ventana *v, Admin *admin) {
                       panel_x + 40, panel_y + 90, COLOR_TEXTO_SUAVE);
 
         boton_dibujar(v, &btn_clientes);
+        boton_dibujar(v, &btn_crear_admin);
         boton_dibujar(v, &btn_salir);
 
         ventana_presentar(v);
