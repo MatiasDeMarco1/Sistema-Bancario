@@ -29,7 +29,7 @@ static const char *mensaje_registro(ResultadoRegistro r) {
     }
 }
 
-Navegacion pantalla_registro(Ventana *v) {
+Navegacion pantalla_registro(Ventana *v, Cliente *registrado) {
     // --- Layout ---
     int panel_w = 560;
     int panel_h = 560;
@@ -69,7 +69,7 @@ Navegacion pantalla_registro(Ventana *v) {
 
     SDL_Event e;
     Navegacion siguiente = NAV_LOGIN;   // por defecto, al salir vuelve al login
-    int registrado = 0;
+    int registrado_ok = 0;
 
     // Mientras no se haya registrado ni pedido salir, seguimos en el form.
     // Usamos una bandera local porque NAV_LOGIN es tambien el "estado actual".
@@ -103,25 +103,23 @@ Navegacion pantalla_registro(Ventana *v) {
 
             // Registrar
             if (boton_fue_clickeado(&btn_registrar, &e)) {
-                // Armar el cliente con lo capturado
-                Cliente c;
-                memset(&c, 0, sizeof(Cliente));
-                strncpy(c.nombre,    campos[F_NOMBRE].texto,    sizeof(c.nombre)-1);
-                strncpy(c.apellido,  campos[F_APELLIDO].texto,  sizeof(c.apellido)-1);
-                strncpy(c.cuit,      campos[F_CUIT].texto,      sizeof(c.cuit)-1);
-                strncpy(c.mail,      campos[F_MAIL].texto,      sizeof(c.mail)-1);
-                strncpy(c.telefono,  campos[F_TELEFONO].texto,  sizeof(c.telefono)-1);
-                strncpy(c.localidad, campos[F_LOCALIDAD].texto, sizeof(c.localidad)-1);
-                strncpy(c.pais,      campos[F_PAIS].texto,      sizeof(c.pais)-1);
-                strncpy(c.contrasena,campos[F_PASS].texto,      sizeof(c.contrasena)-1);
+                // Armar el cliente directamente en *registrado
+                memset(registrado, 0, sizeof(Cliente));
+                strncpy(registrado->nombre,    campos[F_NOMBRE].texto,    sizeof(registrado->nombre)-1);
+                strncpy(registrado->apellido,  campos[F_APELLIDO].texto,  sizeof(registrado->apellido)-1);
+                strncpy(registrado->cuit,      campos[F_CUIT].texto,      sizeof(registrado->cuit)-1);
+                strncpy(registrado->mail,      campos[F_MAIL].texto,      sizeof(registrado->mail)-1);
+                strncpy(registrado->telefono,  campos[F_TELEFONO].texto,  sizeof(registrado->telefono)-1);
+                strncpy(registrado->localidad, campos[F_LOCALIDAD].texto, sizeof(registrado->localidad)-1);
+                strncpy(registrado->pais,      campos[F_PAIS].texto,      sizeof(registrado->pais)-1);
+                strncpy(registrado->contrasena,campos[F_PASS].texto,      sizeof(registrado->contrasena)-1);
 
-                ResultadoRegistro r = crearCliente_op(&c);
+                ResultadoRegistro r = crearCliente_op(registrado);
                 strcpy(mensaje, mensaje_registro(r));
 
                 if (r == REG_OK) {
                     color_msg = COLOR_EXITO;
-                    registrado = 1;
-                    // dejamos un instante el mensaje y volvemos al login
+                    registrado_ok = 1;
                 } else {
                     color_msg = COLOR_PELIGRO;
                 }
@@ -141,7 +139,7 @@ Navegacion pantalla_registro(Ventana *v) {
         panel_dibujar(v, panel, COLOR_PANEL, COLOR_BORDE);
 
         texto_dibujar(v, v->font_grande, "Crear cuenta nueva",
-                    campo_x, panel_y + 30, COLOR_TEXTO);
+                      campo_x, panel_y + 30, COLOR_TEXTO);
 
         for (int i = 0; i < CANT_CAMPOS; i++)
             input_dibujar(v, &campos[i]);
@@ -151,16 +149,16 @@ Navegacion pantalla_registro(Ventana *v) {
 
         if (mensaje[0] != '\0') {
             texto_dibujar(v, v->font_chico, mensaje,
-                        campo_x, by + 56, color_msg);
+                          campo_x, by + 56, color_msg);
         }
 
         ventana_presentar(v);
 
-        // Si se registro con exito, mostrar el mensaje un momento y volver
-        if (registrado) {
-            SDL_Delay(1200);
+        // Si se registro con exito, ir a la pantalla de verificacion
+        if (registrado_ok) {
+            SDL_Delay(800);
             en_pantalla = 0;
-            siguiente = NAV_LOGIN;
+            siguiente = NAV_VERIFICAR;
         }
     }
 

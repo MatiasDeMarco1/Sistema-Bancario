@@ -59,6 +59,9 @@ Navegacion pantalla_login(Ventana *v, Cliente *c, Admin *a) {
                     if (!c->activo) {
                         strcpy(mensaje, "Tu cuenta esta dada de baja");
                         input_limpiar(&in_pass);
+                    } else if (!c->verificado) {
+                        // No verifico su mail: lo mandamos a verificar
+                        siguiente = NAV_VERIFICAR;
                     } else {
                         siguiente = NAV_MENU;
                     }

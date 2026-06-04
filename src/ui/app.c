@@ -2,6 +2,7 @@
 #include "navegacion.h"
 #include "pantalla_login.h"
 #include "pantalla_registro.h"
+#include "pantalla_verificar.h"
 #include "pantalla_menu.h"
 #include "pantalla_perfil.h"
 #include "pantalla_seleccion_cuenta.h"
@@ -37,7 +38,10 @@ void iniciarApp(void) {
                 actual = pantalla_login(&v, &cliente, &admin);
                 break;
             case NAV_REGISTRO:
-                actual = pantalla_registro(&v);
+                actual = pantalla_registro(&v, &cliente);
+                break;
+            case NAV_VERIFICAR:
+                actual = pantalla_verificar(&v, &cliente);
                 break;
             case NAV_MENU:
                 actual = pantalla_menu(&v, &cliente);

@@ -1,0 +1,6 @@
+# Copiar este archivo a smtp.conf y completar con credenciales reales.
+# smtp.conf esta en .gitignore y NO debe subirse.
+smtp_servidor=smtp.gmail.com
+smtp_puerto=465
+smtp_usuario=tu_correo@gmail.com
+smtp_password=tu_app_password_aqui

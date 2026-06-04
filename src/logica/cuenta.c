@@ -57,7 +57,6 @@ void guardarCambiosCuenta(Cuenta *c) {
     Recibe como puntero el valor CBU tipo CHAR
 */
 void generarCBU(char *cbu) {
-    srand(time(NULL));
     for (int i = 0; i < 22; i++)
         cbu[i] = '0' + rand() % 10;
     cbu[22] = '\0';

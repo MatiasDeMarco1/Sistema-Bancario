@@ -6,6 +6,7 @@ typedef enum {
     NAV_SALIR,
     NAV_LOGIN,
     NAV_REGISTRO,
+    NAV_VERIFICAR,          // ingresar codigo de verificacion de mail
     NAV_MENU,
     NAV_PERFIL,
     NAV_SELECCION_CUENTA,
@@ -18,7 +19,7 @@ typedef enum {
     NAV_ADMIN_CUENTAS,
     NAV_ADMIN_MOVIMIENTOS,
     NAV_ADMIN_EDITAR,
-    NAV_ADMIN_CREAR        // crear un nuevo administrador
+    NAV_ADMIN_CREAR
 } Navegacion;
 
 #endif

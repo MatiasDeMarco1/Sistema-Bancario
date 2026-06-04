@@ -15,6 +15,8 @@ typedef struct {
     char pais[30];
     char contrasena[64];
     int  activo;
+    int  verificado;        // 0 = mail no verificado, 1 = verificado
+    char codigo_verif[7];   // codigo de 6 digitos + '\0'
 } Cliente;
 
 
@@ -69,4 +71,9 @@ int obtenerTodosLosClientes(Cliente arr[], int max);
 
 ResultadoEdicion editarNombre_op(Cliente *c, const char *nuevo);
 ResultadoEdicion editarApellido_op(Cliente *c, const char *nuevo);
+
+void generarCodigoVerif(char *cod);
+int  enviarCodigoVerif(Cliente *c);
+int verificarCodigo(Cliente *c, const char *codigo);
+int reenviarCodigo(Cliente *c);
 #endif

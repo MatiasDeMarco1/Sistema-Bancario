@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include "cliente.h"
 #include "validaciones.h"
+#include <time.h>          // para sembrar rand (si no esta ya)
+#include "correo.h"        // para enviarCorreo
+#include "sesion_smtp.h"   // para g_config_smtp
 
 #define ARCHIVO "./datos/clientes.dat"
 
@@ -251,6 +254,9 @@ ResultadoRegistro crearCliente_op(Cliente *c) {
     hashearContrasena(c->contrasena, hash);
     strcpy(c->contrasena, hash);
 
+    c->verificado = 0;                  // arranca sin verificar
+    generarCodigoVerif(c->codigo_verif);
+
     FILE *f = fopen(ARCHIVO, "rb");
     if (f == NULL) {
         c->id = 1;
@@ -262,6 +268,9 @@ ResultadoRegistro crearCliente_op(Cliente *c) {
     c->activo = 1;
 
     guardarCliente(c);
+
+    // Enviar el codigo por mail (si falla, el cliente igual quedo creado)
+    enviarCodigoVerif(c);
     return REG_OK;
 }
 
@@ -348,4 +357,41 @@ ResultadoEdicion editarApellido_op(Cliente *c, const char *nuevo) {
     strcpy(c->apellido, nuevo);
     guardarCambios(c);
     return EDIT_OK;
+}
+
+// Genera un codigo de 6 digitos
+void generarCodigoVerif(char *cod) {
+    for (int i = 0; i < 6; i++)
+        cod[i] = '0' + rand() % 10;
+    cod[6] = '\0';
+}
+
+// Envia el codigo de verificacion al mail del cliente.
+// Devuelve 1 si se envio, 0 si fallo (igual no es fatal).
+int enviarCodigoVerif(Cliente *c) {
+    char asunto[] = "Codigo de verificacion - Banco UCEL";
+    char cuerpo[200];
+    snprintf(cuerpo, sizeof(cuerpo),
+             "Hola %s,\r\nTu codigo de verificacion es: %s\r\n"
+             "Ingresalo en la aplicacion para activar tu cuenta.",
+             c->nombre, c->codigo_verif);
+    return enviarCorreo(&g_config_smtp, c->mail, asunto, cuerpo);
+}
+
+// Verifica el codigo ingresado contra el guardado.
+// Si coincide, marca al cliente como verificado y guarda. Devuelve 1; si no, 0.
+int verificarCodigo(Cliente *c, const char *codigo) {
+    if (strcmp(c->codigo_verif, codigo) == 0) {
+        c->verificado = 1;
+        guardarCambios(c);
+        return 1;
+    }
+    return 0;
+}
+
+// Regenera el codigo y lo reenvia por mail. Devuelve 1 si se envio.
+int reenviarCodigo(Cliente *c) {
+    generarCodigoVerif(c->codigo_verif);
+    guardarCambios(c);              // guardar el codigo nuevo
+    return enviarCodigoVerif(c);
 }
