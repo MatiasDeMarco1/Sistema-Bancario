@@ -6,7 +6,7 @@ typedef struct {
     int  puerto;
     char usuario[100];
     char password[100];
-    int  cargado;      // 1 si se leyo bien el archivo, 0 si no
+    int  cargado;      
 } ConfigSMTP;
 
 // Lee config/smtp.conf y carga las credenciales en *cfg.

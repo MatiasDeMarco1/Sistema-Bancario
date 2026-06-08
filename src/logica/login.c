@@ -35,7 +35,7 @@ int login_validar(const char *identificador, const char *contrasena, Cliente *c)
         if ((strcmp(c->cuit,     identificador) == 0 ||
             strcmp(c->mail,     identificador) == 0 ||
             strcmp(c->telefono, identificador) == 0) &&
-             strcmp(c->contrasena, hash_ingresado) == 0) {   // hash vs hash
+            strcmp(c->contrasena, hash_ingresado) == 0) {   
             fclose(f);
             return 1;
         }

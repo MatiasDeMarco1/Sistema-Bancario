@@ -102,7 +102,7 @@ void menuPostLogin(Cliente *cliente) {
                 if (confirm[0] == 's' || confirm[0] == 'S') {
                     eliminarCliente(cliente->cuit);
                     printf("Te diste de baja exitosamente.\n");
-                    return; // vuelve al menu inicial
+                    return; 
                 }
                 break;
             }

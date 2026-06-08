@@ -16,9 +16,9 @@ typedef struct {
     TipoMovimiento tipo;
     Moneda         moneda;
     char           cuit_origen[14];
-    char           cuit_destino[14];  // igual a origen si es ingreso/egreso
+    char           cuit_destino[14];  
     char           cbu_origen[23];
-    char           cbu_destino[23];   // igual a origen si es ingreso/egreso
+    char           cbu_destino[23];   
     double         monto;   
     time_t         fecha;         
 } Movimiento;

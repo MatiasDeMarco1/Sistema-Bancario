@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include "cliente.h"
 #include "validaciones.h"
-#include <time.h>          // para sembrar rand (si no esta ya)
-#include "correo.h"        // para enviarCorreo
-#include "sesion_smtp.h"   // para g_config_smtp
+#include <time.h>          
+#include "correo.h"        
+#include "sesion_smtp.h"   
 
 #define ARCHIVO "./datos/clientes.dat"
 
@@ -22,16 +22,6 @@ void guardarCliente(Cliente *c) {
     fwrite(c, sizeof(Cliente), 1, f);
     fclose(f);
 }
-
-
-/* int buscarCliente(int id, Cliente *c) {
-    FILE *f = fopen(ARCHIVO, "rb");
-    if (f == NULL) { printf("Error al abrir archivo.\n"); return 0; }
-    fseek(f, (id - 1) * sizeof(Cliente), SEEK_SET);
-    int leido = fread(c, sizeof(Cliente), 1, f);
-    fclose(f);
-    return leido;
-} */
 
 void guardarCambios(Cliente *c) {
     FILE *f = fopen(ARCHIVO, "r+b");
@@ -137,104 +127,6 @@ void eliminarCliente(char *cuit) {
     printf("Cliente no encontrado.\n");
 }
 
-/* void editarCliente(Cliente *c) {
-    int opcion;
-    printf("Seleccione el campo a editar:\n");
-    printf("1. Mail\n");
-    printf("2. Telefono\n");
-    printf("3. Localidad\n");
-    printf("4. Pais\n");
-    printf("5. Contrasena\n");
-    printf("Opcion: ");
-    scanf("%d", &opcion);
-    getchar();
-
-    switch (opcion) {
-        case 1: editarMail(c);       break;
-        case 2: editarTelefono(c);   break;
-        case 3: editarLocalidad(c);  break;
-        case 4: editarPais(c);       break;
-        case 5: editarContrasena(c); break;
-        default: printf("Opcion invalida.\n"); return;
-    }
-
-    guardarCambios(c); // guarda en el archivo despues de editar
-} */
-
-// ---- EDITAR CAMPOS ----
-
-
-
-/* void editarMail(Cliente *c) {
-    do {
-        printf("Ingrese el nuevo mail: ");
-        fgets(c->mail, sizeof(c->mail), stdin);
-        c->mail[strcspn(c->mail, "\n")] = '\0';
-        if (!validar_Mail(c->mail))
-            printf("Error: mail invalido.\n");
-    } while (!validar_Mail(c->mail));
-}
-
-void editarTelefono(Cliente *c) {
-    do {
-        printf("Ingrese el nuevo telefono: ");
-        fgets(c->telefono, sizeof(c->telefono), stdin);
-        c->telefono[strcspn(c->telefono, "\n")] = '\0';
-        if (!validar_Telefono(c->telefono))
-            printf("Error: telefono invalido.\n");
-    } while (!validar_Telefono(c->telefono));
-}
-
-void editarLocalidad(Cliente *c) {
-    printf("Ingrese la nueva localidad: ");
-    fgets(c->localidad, sizeof(c->localidad), stdin);
-    c->localidad[strcspn(c->localidad, "\n")] = '\0';
-}
-
-void editarPais(Cliente *c) {
-    printf("Ingrese el nuevo pais: ");
-    fgets(c->pais, sizeof(c->pais), stdin);
-    c->pais[strcspn(c->pais, "\n")] = '\0';
-}
-
-void editarContrasena(Cliente *c) {
-    char buffer[100];
-    validarContrasena(buffer, sizeof(buffer));
-    strcpy(c->contrasena, buffer);
-} */
-// ---- MOSTRAR ----
-
-/* void mostrarCliente(Cliente *c) {
-    if (c == NULL || !c->activo) {
-        printf("El cliente no existe.\n");
-        return;
-    }
-    printf("ID:        %d\n",  c->id);
-    printf("Nombre:    %s\n",  c->nombre);
-    printf("Apellido:  %s\n",  c->apellido);
-    printf("CUIT:      %s\n",  c->cuit);
-    printf("Mail:      %s\n",  c->mail);
-    printf("Telefono:  %s\n",  c->telefono);
-    printf("Localidad: %s\n",  c->localidad);
-    printf("Pais:      %s\n",  c->pais);
-}
-
-void mostrarTodos() {
-    FILE *f = fopen(ARCHIVO, "rb");
-    if (f == NULL) { printf("No hay clientes registrados.\n"); return; }
-    Cliente c;
-    int encontrado = 0;
-    while (fread(&c, sizeof(Cliente), 1, f)) {
-        if (c.activo) {
-            mostrarCliente(&c);
-            printf("-------------------\n");
-            encontrado = 1;
-        }
-    }
-    if (!encontrado) printf("No hay clientes activos.\n");
-    fclose(f);
-} */
-
 
 ResultadoRegistro crearCliente_op(Cliente *c) {
     if (c->nombre[0] == '\0' || c->apellido[0] == '\0' ||
@@ -254,7 +146,7 @@ ResultadoRegistro crearCliente_op(Cliente *c) {
     hashearContrasena(c->contrasena, hash);
     strcpy(c->contrasena, hash);
 
-    c->verificado = 0;                  // arranca sin verificar
+    c->verificado = 0;                  
     generarCodigoVerif(c->codigo_verif);
 
     FILE *f = fopen(ARCHIVO, "rb");
@@ -313,7 +205,7 @@ ResultadoEdicion editarPais_op(Cliente *c, const char *nuevo) {
 ResultadoEdicion editarContrasena_op(Cliente *c, const char *nueva) {
     if (!validar_contrasena_str(nueva)) return EDIT_PASS_CORTA;
     char hash[17];
-    hashearContrasena(nueva, hash);     // hashear igual que en el registro
+    hashearContrasena(nueva, hash);     
     strcpy(c->contrasena, hash);
     guardarCambios(c);
     return EDIT_OK;
@@ -372,9 +264,9 @@ int enviarCodigoVerif(Cliente *c) {
     char asunto[] = "Codigo de verificacion - Banco UCEL";
     char cuerpo[200];
     snprintf(cuerpo, sizeof(cuerpo),
-             "Hola %s,\r\nTu codigo de verificacion es: %s\r\n"
-             "Ingresalo en la aplicacion para activar tu cuenta.",
-             c->nombre, c->codigo_verif);
+            "Hola %s,\r\nTu codigo de verificacion es: %s\r\n"
+            "Ingresalo en la aplicacion para activar tu cuenta.",
+            c->nombre, c->codigo_verif);
     return enviarCorreo(&g_config_smtp, c->mail, asunto, cuerpo);
 }
 

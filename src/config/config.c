@@ -20,7 +20,7 @@ int cargarConfigSMTP(ConfigSMTP *cfg) {
     FILE *f = fopen(ARCHIVO_CONFIG, "r");
     if (f == NULL) {
         printf("Aviso: no se encontro %s. El envio de correo esta deshabilitado.\n",
-               ARCHIVO_CONFIG);
+            ARCHIVO_CONFIG);
         return 0;
     }
 

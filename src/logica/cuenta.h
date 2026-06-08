@@ -15,7 +15,6 @@ typedef struct {
 
 // Archivo
 void guardarCuenta(Cuenta *c);
-/* int  buscarCuenta(int id, Cuenta *c); */
 void guardarCambiosCuenta(Cuenta *c);
 
 // ABM

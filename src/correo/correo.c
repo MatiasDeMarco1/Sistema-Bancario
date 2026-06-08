@@ -38,12 +38,12 @@ int enviarCorreo(const ConfigSMTP *cfg, const char *destino,
     // Armar el mail completo (headers + cuerpo) en formato RFC 5322
     char mensaje[2048];
     snprintf(mensaje, sizeof(mensaje),
-             "To: %s\r\n"
-             "From: %s\r\n"
-             "Subject: %s\r\n"
-             "\r\n"
-             "%s\r\n",
-             destino, cfg->usuario, asunto, cuerpo);
+            "To: %s\r\n"
+            "From: %s\r\n"
+            "Subject: %s\r\n"
+            "\r\n"
+            "%s\r\n",
+            destino, cfg->usuario, asunto, cuerpo);
 
     struct DatosLectura datos = { mensaje, 0 };
 

@@ -15,7 +15,7 @@ typedef struct {
     char pais[30];
     char contrasena[64];
     int  activo;
-    int  verificado;        // 0 = mail no verificado, 1 = verificado
+    int  verificado;        
     char codigo_verif[7];   // codigo de 6 digitos + '\0'
 } Cliente;
 
@@ -24,20 +24,9 @@ typedef struct {
 // ABM
 void crearCliente(Cliente *c);
 void eliminarCliente(char *c);
-/* void editarCliente(Cliente *c); */
-/* void mostrarCliente(Cliente *c);
-void mostrarTodos(); */
-
-// Editar campos
-/* void editarMail(Cliente *c);
-void editarTelefono(Cliente *c);
-void editarLocalidad(Cliente *c);
-void editarPais(Cliente *c);
-void editarContrasena(Cliente *c); */
 
 // Archivo
 void guardarCliente(Cliente *c);
-/* int  buscarCliente(int id, Cliente *c); */
 void guardarCambios(Cliente *c);
 
 typedef enum {
