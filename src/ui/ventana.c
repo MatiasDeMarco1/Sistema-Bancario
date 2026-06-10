@@ -16,14 +16,14 @@ int ventana_init(Ventana *v) {
         return 0;
     }
 
-    // Crear ventana
+    // Crear ventana (RESIZABLE para permitir maximizar)
     v->window = SDL_CreateWindow(
         VENTANA_TITULO,
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
         VENTANA_ANCHO,
         VENTANA_ALTO,
-        SDL_WINDOW_SHOWN
+        SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
     );
     if (!v->window) {
         printf("Error al crear ventana: %s\n", SDL_GetError());
@@ -44,6 +44,14 @@ int ventana_init(Ventana *v) {
         SDL_Quit();
         return 0;
     }
+
+    // Lienzo logico fijo: SDL escala todo el contenido automaticamente al
+    // tamaño real de la ventana, manteniendo la proporcion. Si la ventana
+    // maximizada no respeta la proporcion 900x600, aparecen franjas (letterbox).
+    SDL_RenderSetLogicalSize(v->renderer, VENTANA_ANCHO, VENTANA_ALTO);
+
+    // Color de las franjas del letterbox (negro)
+    SDL_SetRenderDrawColor(v->renderer, 0, 0, 0, 255);
 
     SDL_StartTextInput();
 
