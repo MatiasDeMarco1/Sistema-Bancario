@@ -74,7 +74,7 @@ Navegacion pantalla_perfil(Ventana *v, Cliente *cliente) {
 
     // Estado de edicion
     int editando = -1;              // -1 = ninguno; si no, indice del campo
-    Input in_edit = input_crear(0, 0, 10, 10, "", 0);  // se reposiciona al editar
+    Input in_edit = input_crear(0, 0, 10, 10, "", 0);  
     Boton btn_guardar = boton_crear(0, 0, 10, 10, "Guardar", COLOR_EXITO, COLOR_EXITO);
     Boton btn_cancelar_edit = boton_crear(0, 0, 10, 10, "Cancelar", COLOR_PANEL, COLOR_BORDE);
 
@@ -82,7 +82,7 @@ Navegacion pantalla_perfil(Ventana *v, Cliente *cliente) {
     SDL_Color color_msg = COLOR_TEXTO_SUAVE;
 
     SDL_Event e;
-    Navegacion siguiente = NAV_MENU;   // por compatibilidad: se queda hasta volver
+    Navegacion siguiente = NAV_MENU;   
     int en_perfil = 1;
 
     while (en_perfil && v->corriendo) {
@@ -169,7 +169,7 @@ Navegacion pantalla_perfil(Ventana *v, Cliente *cliente) {
         // Valores actuales de cada campo editable
         const char *valores[CANT_EDITABLES] = {
             cliente->mail, cliente->telefono, cliente->localidad,
-            cliente->pais, "********"   // la contrasena nunca se muestra
+            cliente->pais, "********"  
         };
 
         for (int i = 0; i < CANT_EDITABLES; i++) {

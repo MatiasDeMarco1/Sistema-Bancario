@@ -109,7 +109,6 @@ void retirarDinero(Cuenta *cuenta) {
  *   - Registra UN movimiento de tipo TRANSFERENCIA con origen y destino distintos.
  */
 void transferir(Cuenta *origen, const char *cuit_titular) {
-    /* --- Elegir método de búsqueda --- */
     int metodo;
     printf("Transferir por:\n");
     printf("1. CBU\n");
@@ -123,7 +122,6 @@ void transferir(Cuenta *origen, const char *cuit_titular) {
         return;
     }
 
-    /* --- Pedir CBU o alias según elección --- */
     char busqueda[50];
     if (metodo == 1) {
         printf("Ingrese el CBU destino: ");

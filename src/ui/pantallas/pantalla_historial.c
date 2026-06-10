@@ -11,7 +11,6 @@ int obtenerHistorialCliente(char *cuit, Movimiento movs[], int max);
 #define MAX_MOVS 200
 
 Navegacion pantalla_historial(Ventana *v, Cliente *cliente) {
-    // Traer movimientos del cliente
     static Movimiento movs[MAX_MOVS];   // static: evita gran stack frame
     int n = obtenerHistorialCliente(cliente->cuit, movs, MAX_MOVS);
 
@@ -22,14 +21,13 @@ Navegacion pantalla_historial(Ventana *v, Cliente *cliente) {
     int panel_y = (VENTANA_ALTO  - panel_h) / 2;
     SDL_Rect panel = { panel_x, panel_y, panel_w, panel_h };
 
-    // Area de lista (con recorte para el scroll)
     SDL_Rect area_lista = {
         panel_x + 20, panel_y + 80,
         panel_w - 40, panel_h - 150
     };
 
-    int item_h = 70;          // alto de cada movimiento
-    int scroll = 0;           // desplazamiento vertical en px
+    int item_h = 70;          
+    int scroll = 0;          
     int total_alto = n * item_h;
     int max_scroll = total_alto - area_lista.h;
     if (max_scroll < 0) max_scroll = 0;
@@ -53,7 +51,7 @@ Navegacion pantalla_historial(Ventana *v, Cliente *cliente) {
 
             // Scroll con la rueda del mouse
             if (e.type == SDL_MOUSEWHEEL) {
-                scroll -= e.wheel.y * 30;   // 30 px por "tick"
+                scroll -= e.wheel.y * 30;   
                 if (scroll < 0) scroll = 0;
                 if (scroll > max_scroll) scroll = max_scroll;
             }

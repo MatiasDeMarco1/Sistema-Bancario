@@ -16,10 +16,10 @@ void eliminarCliente(char *cuit);
 
 // Sub-modos del menu
 typedef enum {
-    MODO_MENU,          // botones normales
-    MODO_CREAR_PESOS,   // formulario alias para cuenta en pesos
-    MODO_CREAR_DOLARES, // formulario alias para cuenta en dolares
-    MODO_CONFIRMAR_BAJA // dialogo de confirmacion de baja
+    MODO_MENU,          
+    MODO_CREAR_PESOS,  
+    MODO_CREAR_DOLARES, 
+    MODO_CONFIRMAR_BAJA 
 } ModoMenu;
 
 Navegacion pantalla_menu(Ventana *v, Cliente *cliente) {
@@ -111,7 +111,7 @@ Navegacion pantalla_menu(Ventana *v, Cliente *cliente) {
                 }
 
                 if (boton_fue_clickeado(&btn_baja, &e)) {
-                    modo = MODO_CONFIRMAR_BAJA;   // mostrar confirmacion
+                    modo = MODO_CONFIRMAR_BAJA;   
                     mensaje[0] = '\0';
                 }
                 if (boton_fue_clickeado(&btn_salir, &e))
@@ -124,8 +124,8 @@ Navegacion pantalla_menu(Ventana *v, Cliente *cliente) {
                     modo = MODO_MENU;
                 }
                 if (boton_fue_clickeado(&btn_baja_si, &e)) {
-                    eliminarCliente(cliente->cuit);   // baja logica real
-                    siguiente = NAV_LOGIN;            // vuelve al login
+                    eliminarCliente(cliente->cuit);   
+                    siguiente = NAV_LOGIN;            
                 }
             } else {
                 // Modo formulario: capturar alias

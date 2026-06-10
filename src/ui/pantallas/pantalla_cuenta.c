@@ -58,7 +58,6 @@ Navegacion pantalla_cuenta(Ventana *v, Cuenta *cuenta) {
     Boton btn_volver = boton_crear(col1, panel_y + panel_h - 60,
         btn_w * 2 + gap, 44, "Volver", COLOR_PANEL, COLOR_BORDE);
 
-    // Formulario (monto o alias segun el modo)
     int form_y = fila2 + btn_h + 30;
     Input in_campo = input_crear(col1, form_y, 300, 42, "", 0);
     Boton btn_confirmar = boton_crear(col1 + 310, form_y, 130, 42,

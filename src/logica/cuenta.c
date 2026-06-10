@@ -21,28 +21,11 @@ void guardarCuenta(Cuenta *c) {
     fclose(f);
 }
 
-/*  Abre archivo en forma rb -> Leer binario
-    Recibe id y puntero de estructura Cuenta
-    Mensaje de error si archivo no existe
-    Busca en el archivo, el id de la cuenta, retorna si la encontro.
-*/
-
-/* int buscarCuenta(int id, Cuenta *c) {
-    FILE *f = fopen(ARCHIVO_CUENTAS, "rb");
-    if (f == NULL) { printf("Error al abrir archivo.\n"); return 0; }
-    fseek(f, (id - 1) * sizeof(Cuenta), SEEK_SET);
-    int leido = fread(c, sizeof(Cuenta), 1, f);
-    fclose(f);
-    return leido;
-} */
-
-
 /*  Recibe puntero de estructura Cuenta
     Se abre archivo en r+b -> Permite leer y escribir binario
     Da error si archivo no existe
     guarda los cambios en el archivo, no elimina, solo MODIFICA
 */
-
 void guardarCambiosCuenta(Cuenta *c) {
     FILE *f = fopen(ARCHIVO_CUENTAS, "r+b");
     if (f == NULL) { printf("Error al abrir archivo.\n"); return; }
@@ -87,8 +70,6 @@ void pedirAlias(char *alias, Moneda moneda) {
 
 // ---- ABM ----
 
-/*
-*/
 int clienteTieneCuenta(char *cuit, Moneda moneda) {
     FILE *f = fopen(ARCHIVO_CUENTAS, "rb");
     if (f == NULL) return 0;

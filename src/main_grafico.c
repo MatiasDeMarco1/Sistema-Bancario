@@ -6,8 +6,8 @@
 
 int main(void) {
     system("mkdir -p datos");
-    srand(time(NULL));        // sembrar rand una sola vez (codigos, CBU)
-    inicializarSMTP();        // cargar config SMTP una vez
+    srand(time(NULL));        
+    inicializarSMTP();       
     seedAdmin();
     iniciarApp();
     return 0;

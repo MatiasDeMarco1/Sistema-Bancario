@@ -6,7 +6,7 @@ typedef enum {
     NAV_SALIR,
     NAV_LOGIN,
     NAV_REGISTRO,
-    NAV_VERIFICAR,          // ingresar codigo de verificacion de mail
+    NAV_VERIFICAR,          
     NAV_MENU,
     NAV_PERFIL,
     NAV_SELECCION_CUENTA,

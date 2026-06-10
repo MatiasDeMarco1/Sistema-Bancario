@@ -21,9 +21,9 @@ typedef struct {
 // Campo de entrada de texto
 typedef struct {
     SDL_Rect  rect;
-    char      texto[128];   // contenido escrito
+    char      texto[128];   
     char      placeholder[64];
-    int       largo;        // cantidad de caracteres actuales
+    int       largo;        
     int       activo;       // 1 si tiene el foco
     int       es_password;  // 1 oculta el texto con asteriscos
 } Input;

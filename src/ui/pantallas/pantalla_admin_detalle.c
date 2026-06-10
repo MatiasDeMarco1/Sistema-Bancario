@@ -27,7 +27,6 @@ Navegacion pantalla_admin_detalle(Ventana *v, Cliente *cliente) {
         "Ver movimientos", COLOR_PRIMARIO, COLOR_PRIMARIO_HOVER);
     Boton btn_editar = boton_crear(x0, y0 + 2 * (btn_h + gap), ancho, btn_h,
         "Editar datos", COLOR_PRIMARIO, COLOR_PRIMARIO_HOVER);
-    // El boton de baja/reactivar cambia segun el estado
     Boton btn_estado = boton_crear(x0, y0 + 3 * (btn_h + gap), ancho, btn_h,
         "", COLOR_PELIGRO, COLOR_PELIGRO);
     Boton btn_volver = boton_crear(x0, y0 + 4 * (btn_h + gap), ancho, 44,
